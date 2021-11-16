@@ -33,4 +33,18 @@ public class GameStateManagerTest {
 
 	}
 
+	@Test
+	void createGameState() {
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Dieter", 420, 1337);
+
+		List<GameState> gameStates = gsm.getAllGameStates();
+		assertEquals(1, gameStates.size());
+
+		GameState gs = gameStates.get(0);
+		assertEquals(GameType.TIC_TAC_TOE, gs.getGameType());
+		assertEquals("Dieter", gs.getOpponentName());
+		assertEquals(420, gs.getOpponentID());
+		assertEquals(1337, gs.getID());
+	}
+
 }
