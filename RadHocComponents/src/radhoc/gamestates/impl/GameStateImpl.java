@@ -2,6 +2,7 @@ package radhoc.gamestates.impl;
 
 import radhoc.gamestates.GameState;
 import radhoc.gamestates.GameType;
+import radhoc.gamestates.UpdateListener;
 
 public class GameStateImpl implements GameState {
 
@@ -28,13 +29,28 @@ public class GameStateImpl implements GameState {
 	}
 
 	@Override
-	public int getOpponentID() {
+	public long getOpponentID() {
 		return opponentID;
 	}
 
 	@Override
-	public int getID() {
+	public long getID() {
 		return gameID;
 	}
-
+	
+	@Override
+	public GameResult getGameResult() {
+		return null; //TODO
+	}
+	
+	@Override
+	public boolean isPlayable() {
+		return false; //TODO
+	}
+	
+	@Override
+	public void setUpdateListener(UpdateListener listener) {
+		//TODO
+	}
+	
 }
