@@ -37,20 +37,20 @@ public class GameStateImpl implements GameState {
 	public long getID() {
 		return gameID;
 	}
-	
+
 	@Override
 	public GameResult getGameResult() {
-		return null; //TODO
+		return null;
 	}
-	
+
 	@Override
 	public boolean isPlayable() {
-		return false; //TODO
+		return false;
 	}
-	
+
 	@Override
 	public void setUpdateListener(UpdateListener listener) {
-		//TODO
+
 	}
-	
+
 }
