@@ -5,14 +5,19 @@ import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamestates.GameState;
 import radhoc.gamestates.GameType;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GameLogicManagerImpl implements GameLogicManager {
 
-	private Map<GameState, GameLogic> gameLogics  = new HashMap<>();
+	private Map<GameState, GameLogic> gameLogics;
 
-	@Override
+    public GameLogicManagerImpl(Path directory) {
+         gameLogics = new HashMap<>();
+    }
+
+    @Override
 	public GameLogic getGameLogic(GameState state) {
 		
 		GameLogic gl = gameLogics.get(state);

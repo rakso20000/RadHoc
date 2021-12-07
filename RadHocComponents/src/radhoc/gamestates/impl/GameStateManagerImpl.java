@@ -28,11 +28,12 @@ public class GameStateManagerImpl implements GameStateManager {
 	}
 	
 	@Override
-	public void createGameState(GameType gameType, String opponentName, int opponentID, int gameID) {
+	public GameState createGameState(GameType gameType, String opponentName, int opponentID, int gameID) {
 		
 		GameState gs = new GameStateImpl(gameType, opponentName, opponentID, gameID);
 		
 		gameStates.add(gs);
+		return gs;
 	
 	}
 	

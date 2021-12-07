@@ -16,7 +16,7 @@ public interface GameStateManager {
 	 * @param opponentID
 	 * @param gameID
 	 */
-	void createGameState(GameType gameType, String opponentName, int opponentID, int gameID);
+	GameState createGameState(GameType gameType, String opponentName, int opponentID, int gameID);
 	
 	/**
 	 * Sets the UpdateListener for this GameState.
