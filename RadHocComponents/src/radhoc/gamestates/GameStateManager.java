@@ -32,4 +32,9 @@ public interface GameStateManager {
 	 * @throws IllegalArgumentException no GameState with such gameID was found
 	 */
 	GameState getGameState(long gameID) throws IllegalArgumentException;
+	
+	/**
+	 * Persistently saves all current GameStates
+	 */
+	void save();
 }

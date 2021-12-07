@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import radhoc.gamestates.impl.GameStateManagerImpl;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,12 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GameStateManagerTest {
 	
+	private File directory;
 	private GameStateManager gsm;
 	
 	@BeforeEach
 	void setUp() throws IOException {
 		
-		Path directory = Files.createTempDirectory("radhoctests");
+		directory = Files.createTempDirectory("radhoctests").toFile();
 		
 		gsm = GameStateManagerFactory.createGameStateManager(directory);
 		
@@ -35,6 +37,7 @@ public class GameStateManagerTest {
 	
 	@Test
 	void createGameState() {
+		
 		gsm.createGameState(GameType.TIC_TAC_TOE, "Dieter", 420, 1337);
 		
 		List<GameState> gameStates = gsm.getAllGameStates();
@@ -45,6 +48,7 @@ public class GameStateManagerTest {
 		assertEquals("Dieter", gs.getOpponentName());
 		assertEquals(420, gs.getOpponentID());
 		assertEquals(1337, gs.getID());
+		
 	}
 	
 	@Test
@@ -66,6 +70,47 @@ public class GameStateManagerTest {
 		assertThrows(IllegalArgumentException.class, () -> {
 			gsm.getGameState(126);
 		});
+		
+	}
+	
+	@Test
+	void saveGameStates() {
+		
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Sara", 1, 2);
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Peter", 3, 4);
+		
+		gsm.save();
+		gsm = GameStateManagerFactory.createGameStateManager(directory);
+		
+		GameState gsSara = gsm.getGameState(2);
+		assertEquals("Sara", gsSara.getOpponentName());
+		assertEquals(1, gsSara.getOpponentID());
+		assertEquals(2, gsSara.getID());
+		
+		GameState gsPeter = gsm.getGameState(4);
+		assertEquals("Peter", gsPeter.getOpponentName());
+		assertEquals(3, gsPeter.getOpponentID());
+		assertEquals(4, gsPeter.getID());
+		
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Clara", 5, 6);
+		
+		gsm.save();
+		gsm = GameStateManagerFactory.createGameStateManager(directory);
+		
+		gsSara = gsm.getGameState(2);
+		assertEquals("Sara", gsSara.getOpponentName());
+		assertEquals(1, gsSara.getOpponentID());
+		assertEquals(2, gsSara.getID());
+		
+		gsPeter = gsm.getGameState(4);
+		assertEquals("Peter", gsPeter.getOpponentName());
+		assertEquals(3, gsPeter.getOpponentID());
+		assertEquals(4, gsPeter.getID());
+		
+		GameState gsClara = gsm.getGameState(6);
+		assertEquals("Clara", gsClara.getOpponentName());
+		assertEquals(5, gsClara.getOpponentID());
+		assertEquals(6, gsClara.getID());
 		
 	}
 	
