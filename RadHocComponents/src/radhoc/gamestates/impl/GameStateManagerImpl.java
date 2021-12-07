@@ -8,6 +8,7 @@ import radhoc.gamestates.UpdateListener;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GameStateManagerImpl implements GameStateManager {
 	
@@ -38,6 +39,18 @@ public class GameStateManagerImpl implements GameStateManager {
 	@Override
 	public void setUpdateListener(UpdateListener listener) {
 		//TODO
+	}
+	
+	@Override
+	public GameState getGameState(long gameID) {
+		
+		Optional<GameState> gameState = gameStates.stream().filter(gs -> gs.getID() == gameID).findAny();
+		
+		if (gameState.isEmpty())
+			throw new IllegalArgumentException("gameID not found: " + gameID);
+		
+		return gameState.get();
+		
 	}
 	
 }
