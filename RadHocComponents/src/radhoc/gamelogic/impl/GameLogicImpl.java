@@ -6,14 +6,14 @@ import radhoc.gamestates.GameType;
 
 public abstract class GameLogicImpl implements GameLogic {
 
-    private GameState state;
+	private GameState state;
 
-    public GameLogicImpl(GameState state) {
-        this.state = state;
-    }
+	public GameLogicImpl(GameState state) {
+		this.state = state;
+	}
 
-    @Override
-    public GameType getGameType() {
-        return this.state.getGameType();
-    }
+	@Override
+	public GameType getGameType() {
+		return this.state.getGameType();
+	}
 }
