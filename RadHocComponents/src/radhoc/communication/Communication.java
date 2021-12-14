@@ -1,8 +1,14 @@
 package radhoc.communication;
 
+import net.sharksystem.ASAPFormats;
+import net.sharksystem.SharkComponent;
 import radhoc.gamestates.GameType;
 
-public interface Communication {
+@ASAPFormats(formats = Communication.ASAP_FORMAT)
+public interface Communication extends SharkComponent {
+	
+	String ASAP_FORMAT = "application/radhoc";
+	
 	/**
 	 * Sends a move to another player
 	 * @param recipientID id of the recipient
