@@ -8,19 +8,16 @@ import java.io.*;
 
 public abstract class GameStateImpl implements GameState {
 	
-	protected final GameType gameType;
-	protected final String opponentName;
-	protected final long opponentID;
-	protected final long gameID;
+	private final GameType gameType;
+	private final String opponentName;
+	private final long opponentID;
+	private final long gameID;
 	
 	public static GameState create(GameType gameType, String opponentName, long opponentID, long gameID) {
 		
-		switch (gameType) {
-		case TIC_TAC_TOE:
-			return new GameStateTicTacToeImpl(opponentName, opponentID, gameID);
-		default:
-			throw new IllegalArgumentException("GameType not supported");
-		}
+		return switch (gameType) {
+			case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID);
+		};
 		
 	}
 	
@@ -33,12 +30,9 @@ public abstract class GameStateImpl implements GameState {
 			long opponentID = ois.readLong();
 			long gameID = ois.readLong();
 			
-			switch (gameType) {
-			case TIC_TAC_TOE:
-				return GameStateTicTacToeImpl.fromStream(opponentName, opponentID, gameID, inputStream);
-			default:
-				throw new IllegalArgumentException("GameType not supported");
-			}
+			return switch (gameType) {
+				case TIC_TAC_TOE -> GameStateTicTacToeImpl.fromStream(opponentName, opponentID, gameID, inputStream);
+			};
 			
 		}
 		
@@ -71,16 +65,6 @@ public abstract class GameStateImpl implements GameState {
 	@Override
 	public long getID() {
 		return gameID;
-	}
-	
-	@Override
-	public GameResult getGameResult() {
-		return null; //TODO
-	}
-	
-	@Override
-	public boolean isPlayable() {
-		return false; //TODO
 	}
 	
 	@Override

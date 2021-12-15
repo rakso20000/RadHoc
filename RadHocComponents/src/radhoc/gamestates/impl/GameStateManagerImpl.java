@@ -8,6 +8,7 @@ import radhoc.gamestates.UpdateListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class GameStateManagerImpl implements GameStateManager {
@@ -20,7 +21,7 @@ public class GameStateManagerImpl implements GameStateManager {
 		
 		this.directory = directory;
 		
-		for (File file : directory.listFiles()) {
+		for (File file : Objects.requireNonNull(directory.listFiles())) {
 			
 			try {
 				
@@ -54,7 +55,7 @@ public class GameStateManagerImpl implements GameStateManager {
 		GameState gs = GameStateImpl.create(gameType, opponentName, opponentID, gameID);
 		
 		gameStates.add(gs);
-	
+		
 	}
 	
 	@Override
@@ -65,7 +66,9 @@ public class GameStateManagerImpl implements GameStateManager {
 	@Override
 	public GameState getGameState(long gameID) {
 		
-		Optional<GameState> gameState = gameStates.stream().filter(gs -> gs.getID() == gameID).findAny();
+		Optional<GameState> gameState = gameStates.stream()
+			.filter(gs -> gs.getID() == gameID)
+			.findAny();
 		
 		if (gameState.isEmpty())
 			throw new IllegalArgumentException("gameID not found: " + gameID);

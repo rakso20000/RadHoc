@@ -44,4 +44,18 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		
 	}
 	
+	@Override
+	public GameResult getGameResult() {
+		
+		return GameResult.STILL_PLAYING;
+		
+	}
+	
+	@Override
+	public boolean isPlayable() {
+		
+		return false;
+		
+	}
+	
 }
