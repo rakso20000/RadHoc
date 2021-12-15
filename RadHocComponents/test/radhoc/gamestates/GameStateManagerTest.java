@@ -3,7 +3,6 @@ package radhoc.gamestates;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import radhoc.gamestates.impl.GameStateManagerImpl;
 
 import java.io.File;
 import java.io.IOException;
