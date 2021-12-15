@@ -4,6 +4,7 @@ import radhoc.gamestates.GameState;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameType;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -14,10 +15,35 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	
 	private GameResult result = GameResult.STILL_PLAYING;
 	
-	public static GameState fromStream(String opponentName, long opponentID, long gameID, InputStream inputStream) {
+	public static GameStateTicTacToe fromStream(String opponentName, long opponentID, long gameID, InputStream inputStream) throws IOException {
 		
-		return new GameStateTicTacToeImpl(opponentName, opponentID, gameID);
-		//TODO
+		GameStateTicTacToeImpl gameState = new GameStateTicTacToeImpl(opponentName, opponentID, gameID);
+		
+		for (int i = 0; i < gameState.shapes.length; ++i)
+			gameState.shapes[i] = byteToShape(inputStream.read());
+		
+		return gameState;
+		
+	}
+	
+	private static byte shapeToByte(Shape shape) {
+		
+		return switch (shape) {
+			case NONE -> 0;
+			case CROSS -> 1;
+			case CIRCLE -> 2;
+		};
+		
+	}
+	
+	private static Shape byteToShape(int b) throws GameStateParseException {
+		
+		return switch (b) {
+			case 0 -> Shape.NONE;
+			case 1 -> Shape.CROSS;
+			case 2 -> Shape.CIRCLE;
+			default -> throw new GameStateParseException("Encountered invalid shape encoding whilst parsing GameStateTicTacToe: " + b);
+		};
 		
 	}
 	
@@ -55,13 +81,6 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	}
 	
 	@Override
-	protected void writeSpecifics(OutputStream outputStream) {
-		
-		//TODO
-		
-	}
-	
-	@Override
 	public GameResult getGameResult() {
 		
 		return result;
@@ -94,6 +113,14 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	public void draw() {
 		
 		result = GameResult.DRAW;
+		
+	}
+	
+	@Override
+	protected void writeSpecifics(OutputStream outputStream) throws IOException {
+		
+		for (Shape shape : shapes)
+			outputStream.write(shapeToByte(shape));
 		
 	}
 	

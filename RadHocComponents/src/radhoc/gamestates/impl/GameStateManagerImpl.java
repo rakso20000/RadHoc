@@ -33,6 +33,9 @@ public class GameStateManagerImpl implements GameStateManager {
 				
 			} catch (IOException ex) {
 				
+				System.err.println("Failed to load GameState from file " + file.getName());
+				ex.printStackTrace();
+				
 				//noinspection ResultOfMethodCallIgnored
 				file.delete();
 				

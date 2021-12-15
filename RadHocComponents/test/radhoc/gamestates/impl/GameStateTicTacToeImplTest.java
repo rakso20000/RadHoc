@@ -8,6 +8,10 @@ import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameStateTicTacToe.Shape;
 import radhoc.gamestates.GameType;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameStateTicTacToeImplTest {
@@ -99,6 +103,53 @@ class GameStateTicTacToeImplTest {
 		assertThrows(IllegalArgumentException.class, () -> gameState.setShapeAt(1, 3, Shape.CROSS));
 		assertThrows(IllegalArgumentException.class, () -> gameState.setShapeAt(-1, 1, Shape.CROSS));
 		assertThrows(IllegalArgumentException.class, () -> gameState.setShapeAt(3, 1, Shape.CROSS));
+		
+	}
+	
+	@Test
+	void readWriteGameState() throws IOException {
+		
+		GameStateTicTacToeImpl gameState = new GameStateTicTacToeImpl("Alice", 1, 10);
+		
+		gameState.setShapeAt(1, 1, Shape.CROSS);
+		gameState.setShapeAt(0, 1, Shape.CIRCLE);
+		gameState.setShapeAt(0, 2, Shape.CROSS);
+		gameState.setShapeAt(2, 0, Shape.CIRCLE);
+		gameState.setShapeAt(2, 2, Shape.CROSS);
+		gameState.setShapeAt(1, 2, Shape.CIRCLE);
+		gameState.setShapeAt(0, 0, Shape.CROSS);
+		
+		byte[] bytes;
+		
+		try (
+			ByteArrayOutputStream baos = new ByteArrayOutputStream()
+		) {
+			
+			gameState.writeSpecifics(baos);
+			
+			bytes = baos.toByteArray();
+			
+		}
+		
+		GameStateTicTacToe gameStateNew;
+		
+		try (
+			ByteArrayInputStream bais = new ByteArrayInputStream(bytes)
+		) {
+			
+			gameStateNew = GameStateTicTacToeImpl.fromStream("Alice", 1, 10, bais);
+			
+		}
+		
+		assertEquals(Shape.CROSS, gameStateNew.getShapeAt(0, 0));
+		assertEquals(Shape.CIRCLE, gameStateNew.getShapeAt(0, 1));
+		assertEquals(Shape.CROSS, gameStateNew.getShapeAt(0, 2));
+		assertEquals(Shape.NONE, gameStateNew.getShapeAt(1, 0));
+		assertEquals(Shape.CROSS, gameStateNew.getShapeAt(1, 1));
+		assertEquals(Shape.CIRCLE, gameStateNew.getShapeAt(1, 2));
+		assertEquals(Shape.CIRCLE, gameStateNew.getShapeAt(2, 0));
+		assertEquals(Shape.NONE, gameStateNew.getShapeAt(2, 1));
+		assertEquals(Shape.CROSS, gameStateNew.getShapeAt(2, 2));
 		
 	}
 	

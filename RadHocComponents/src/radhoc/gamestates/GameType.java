@@ -1,14 +1,16 @@
 package radhoc.gamestates;
 
+import radhoc.gamestates.impl.GameStateParseException;
+
 public enum GameType {
 	
 	TIC_TAC_TOE;
 	
-	public static GameType fromByte(byte b) throws IllegalArgumentException {
+	public static GameType fromByte(byte b) throws GameStateParseException {
 		
 		return switch (b) {
 			case 0 -> TIC_TAC_TOE;
-			default -> throw new IllegalArgumentException();
+			default -> throw new GameStateParseException(String.format("GameType for value %d does not exist", b));
 		};
 		
 	}

@@ -81,6 +81,8 @@ public abstract class GameStateImpl implements GameState {
 			oos.writeLong(opponentID);
 			oos.writeLong(gameID);
 			
+			oos.flush();
+			
 			writeSpecifics(outputStream);
 			
 		}
