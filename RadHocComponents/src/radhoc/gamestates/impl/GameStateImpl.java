@@ -16,7 +16,7 @@ public abstract class GameStateImpl implements GameState {
 	public static GameState create(GameType gameType, String opponentName, long opponentID, long gameID) {
 		
 		return switch (gameType) {
-			case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID);
+			case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, true); //TODO
 		};
 		
 	}

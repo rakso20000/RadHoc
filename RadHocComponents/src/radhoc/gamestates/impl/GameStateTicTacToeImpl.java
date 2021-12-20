@@ -11,13 +11,15 @@ import java.util.Arrays;
 
 public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTicTacToe {
 	
+	private final Shape ownShape;
 	private final Shape[] shapes = new Shape[9];
 	
+	private boolean ownTurn;
 	private GameResult result = GameResult.STILL_PLAYING;
 	
 	public static GameStateTicTacToe fromStream(String opponentName, long opponentID, long gameID, InputStream inputStream) throws IOException {
 		
-		GameStateTicTacToeImpl gameState = new GameStateTicTacToeImpl(opponentName, opponentID, gameID);
+		GameStateTicTacToeImpl gameState = new GameStateTicTacToeImpl(opponentName, opponentID, gameID, true); //TODO
 		
 		for (int i = 0; i < gameState.shapes.length; ++i)
 			gameState.shapes[i] = byteToShape(inputStream.read());
@@ -47,9 +49,12 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		
 	}
 	
-	public GameStateTicTacToeImpl(String opponentName, long opponentID, long gameID) {
+	public GameStateTicTacToeImpl(String opponentName, long opponentID, long gameID, boolean ownTurn) {
 		
 		super(GameType.TIC_TAC_TOE, opponentName, opponentID, gameID);
+		
+		ownShape = ownTurn ? Shape.CROSS : Shape.CIRCLE;
+		this.ownTurn = ownTurn;
 		
 		Arrays.fill(shapes, Shape.NONE);
 		
@@ -57,7 +62,9 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	
 	@Override
 	public Shape getOwnShape() {
-		return null; //TODO
+		
+		return ownShape;
+		
 	}
 	
 	@Override
@@ -90,8 +97,7 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	@Override
 	public boolean isPlayable() {
 		
-		//TODO check if it's this player's turn
-		return result == GameResult.STILL_PLAYING;
+		return result == GameResult.STILL_PLAYING && ownTurn;
 		
 	}
 	

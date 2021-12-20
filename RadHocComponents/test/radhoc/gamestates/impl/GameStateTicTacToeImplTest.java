@@ -19,26 +19,41 @@ class GameStateTicTacToeImplTest {
 	@Test
 	void createGameState() {
 		
-		GameStateTicTacToe gameState = new GameStateTicTacToeImpl("Clara", 3, 5);
+		GameStateTicTacToe gameStateC = new GameStateTicTacToeImpl("Clara", 3, 5, true);
+		GameStateTicTacToe gameStateD = new GameStateTicTacToeImpl("Dieter", 4, 10, false);
 		
-		assertEquals(GameType.TIC_TAC_TOE, gameState.getGameType());
-		assertEquals("Clara", gameState.getOpponentName());
-		assertEquals(3, gameState.getOpponentID());
-		assertEquals(5, gameState.getID());
-		assertEquals(GameResult.STILL_PLAYING, gameState.getGameResult());
+		assertEquals(GameType.TIC_TAC_TOE, gameStateC.getGameType());
+		assertEquals("Clara", gameStateC.getOpponentName());
+		assertEquals(3, gameStateC.getOpponentID());
+		assertEquals(5, gameStateC.getID());
+		assertEquals(GameResult.STILL_PLAYING, gameStateC.getGameResult());
+		assertTrue(gameStateC.isPlayable());
+		assertEquals(Shape.CROSS, gameStateC.getOwnShape());
+		
+		assertEquals(GameType.TIC_TAC_TOE, gameStateD.getGameType());
+		assertEquals("Dieter", gameStateD.getOpponentName());
+		assertEquals(4, gameStateD.getOpponentID());
+		assertEquals(10, gameStateD.getID());
+		assertEquals(GameResult.STILL_PLAYING, gameStateD.getGameResult());
+		assertFalse(gameStateD.isPlayable());
+		assertEquals(Shape.CIRCLE, gameStateD.getOwnShape());
 		
 	}
 	
 	@Test
 	void setResult() {
 		
-		GameStateTicTacToe gameStateA = new GameStateTicTacToeImpl("Alice", 1, 2);
-		GameStateTicTacToe gameStateB = new GameStateTicTacToeImpl("Bernd", 2, 3);
-		GameStateTicTacToe gameStateC = new GameStateTicTacToeImpl("Clara", 3, 4);
+		GameStateTicTacToe gameStateA = new GameStateTicTacToeImpl("Alice", 1, 2, true);
+		GameStateTicTacToe gameStateB = new GameStateTicTacToeImpl("Bernd", 2, 3, true);
+		GameStateTicTacToe gameStateC = new GameStateTicTacToeImpl("Clara", 3, 4, false);
 		
 		assertEquals(GameResult.STILL_PLAYING, gameStateA.getGameResult());
 		assertEquals(GameResult.STILL_PLAYING, gameStateB.getGameResult());
 		assertEquals(GameResult.STILL_PLAYING, gameStateC.getGameResult());
+		
+		assertTrue(gameStateA.isPlayable());
+		assertTrue(gameStateB.isPlayable());
+		assertFalse(gameStateC.isPlayable());
 		
 		gameStateA.win();
 		gameStateB.lose();
@@ -57,7 +72,7 @@ class GameStateTicTacToeImplTest {
 	@Test
 	void setShapes() {
 		
-		GameStateTicTacToe gameState = new GameStateTicTacToeImpl("Dieter", 4, 16);
+		GameStateTicTacToe gameState = new GameStateTicTacToeImpl("Dieter", 4, 16, true);
 		
 		assertEquals(Shape.NONE, gameState.getShapeAt(0, 0));
 		assertEquals(Shape.NONE, gameState.getShapeAt(0, 1));
@@ -92,7 +107,7 @@ class GameStateTicTacToeImplTest {
 	@Test
 	void accessShapeOutOfBounds() {
 		
-		GameStateTicTacToe gameState = new GameStateTicTacToeImpl("Bernd", 2, 10);
+		GameStateTicTacToe gameState = new GameStateTicTacToeImpl("Bernd", 2, 10, true);
 		
 		assertThrows(IllegalArgumentException.class, () -> gameState.getShapeAt(1, -1));
 		assertThrows(IllegalArgumentException.class, () -> gameState.getShapeAt(1, 3));
@@ -109,7 +124,7 @@ class GameStateTicTacToeImplTest {
 	@Test
 	void readWriteGameState() throws IOException {
 		
-		GameStateTicTacToeImpl gameState = new GameStateTicTacToeImpl("Alice", 1, 10);
+		GameStateTicTacToeImpl gameState = new GameStateTicTacToeImpl("Alice", 1, 10, true);
 		
 		gameState.setShapeAt(1, 1, Shape.CROSS);
 		gameState.setShapeAt(0, 1, Shape.CIRCLE);
