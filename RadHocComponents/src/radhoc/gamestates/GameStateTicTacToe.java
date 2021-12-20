@@ -37,22 +37,26 @@ public interface GameStateTicTacToe extends GameState {
 	 * @param y 0 <= y <= 2
 	 * @param shape
 	 * @throws IllegalArgumentException x or y are out of bounds
+	 * @throws IllegalStateException when this GameState is not STILL_PLAYING
 	 */
-	void setShapeAt(int x, int y, Shape shape) throws IllegalArgumentException;
+	void setShapeAt(int x, int y, Shape shape) throws IllegalArgumentException, IllegalStateException;
 	
 	/**
 	 * Marks this game as won
+	 * @throws IllegalStateException when this GameState is not STILL_PLAYING
 	 */
-	void win();
+	void win() throws IllegalStateException;
 	
 	/**
 	 * Marks this game as lost
+	 * @throws IllegalStateException when this GameState is not STILL_PLAYING
 	 */
-	void lose();
+	void lose() throws IllegalStateException;
 	
 	/**
 	 * Marks this game as a draw
+	 * @throws IllegalStateException when this GameState is not STILL_PLAYING
 	 */
-	void draw();
+	void draw() throws IllegalStateException;
 	
 }

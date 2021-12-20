@@ -122,6 +122,34 @@ class GameStateTicTacToeImplTest {
 	}
 	
 	@Test
+	void modifyFinishedGame() {
+		
+		GameStateTicTacToe gameStateWon = new GameStateTicTacToeImpl("Alice", 1, 10, true);
+		GameStateTicTacToe gameStateLost = new GameStateTicTacToeImpl("Bernd", 2, 20, true);
+		GameStateTicTacToe gameStateDraw = new GameStateTicTacToeImpl("Clara", 3, 30, false);
+		
+		gameStateWon.win();
+		gameStateLost.lose();
+		gameStateDraw.draw();
+		
+		assertThrows(IllegalStateException.class, gameStateWon::win);
+		assertThrows(IllegalStateException.class, gameStateWon::lose);
+		assertThrows(IllegalStateException.class, gameStateWon::draw);
+		assertThrows(IllegalStateException.class, () -> gameStateWon.setShapeAt(0, 2, Shape.CROSS));
+		
+		assertThrows(IllegalStateException.class, gameStateLost::win);
+		assertThrows(IllegalStateException.class, gameStateLost::lose);
+		assertThrows(IllegalStateException.class, gameStateLost::draw);
+		assertThrows(IllegalStateException.class, () -> gameStateWon.setShapeAt(1, 0, Shape.CROSS));
+		
+		assertThrows(IllegalStateException.class, gameStateDraw::win);
+		assertThrows(IllegalStateException.class, gameStateDraw::lose);
+		assertThrows(IllegalStateException.class, gameStateDraw::draw);
+		assertThrows(IllegalStateException.class, () -> gameStateWon.setShapeAt(1, 1, Shape.CIRCLE));
+		
+	}
+	
+	@Test
 	void readWriteGameState() throws IOException {
 		
 		GameStateTicTacToeImpl gameState = new GameStateTicTacToeImpl("Alice", 1, 10, true);

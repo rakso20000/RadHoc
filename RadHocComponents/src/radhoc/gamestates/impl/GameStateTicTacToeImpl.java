@@ -78,10 +78,13 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	}
 	
 	@Override
-	public void setShapeAt(int x, int y, Shape shape) throws IllegalArgumentException {
+	public void setShapeAt(int x, int y, Shape shape) throws IllegalArgumentException, IllegalStateException {
 		
 		if (x < 0 || x > 2 || y < 0 || y > 2)
 			throw new IllegalArgumentException(String.format("Coordinates for Tic Tac Toe field are out of bounds: (%d, %d)", x, y));
+		
+		if (result != GameResult.STILL_PLAYING)
+			throw new IllegalStateException(String.format("Tried to modify the field of a GameState that's already %s", result));
 		
 		shapes[x * 3 + y] = shape;
 		
@@ -102,21 +105,30 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	}
 	
 	@Override
-	public void win() {
+	public void win() throws IllegalStateException {
+		
+		if (result != GameResult.STILL_PLAYING)
+			throw new IllegalStateException(String.format("Tried to win a GameState that's already %s", result));
 		
 		result = GameResult.VICTORY;
 		
 	}
 	
 	@Override
-	public void lose() {
+	public void lose() throws IllegalStateException {
+		
+		if (result != GameResult.STILL_PLAYING)
+			throw new IllegalStateException(String.format("Tried to lose a GameState that's already %s", result));
 		
 		result = GameResult.DEFEAT;
 		
 	}
 	
 	@Override
-	public void draw() {
+	public void draw() throws IllegalStateException {
+		
+		if (result != GameResult.STILL_PLAYING)
+			throw new IllegalStateException(String.format("Tried to draw a GameState that's already %s", result));
 		
 		result = GameResult.DRAW;
 		
