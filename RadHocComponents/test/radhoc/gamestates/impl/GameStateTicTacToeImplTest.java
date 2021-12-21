@@ -1,8 +1,6 @@
 package radhoc.gamestates.impl;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import radhoc.gamestates.GameState;
 import radhoc.gamestates.GameState.GameResult;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameStateTicTacToe.Shape;
@@ -28,7 +26,7 @@ class GameStateTicTacToeImplTest {
 		assertEquals(5, gameStateC.getID());
 		assertEquals(GameResult.STILL_PLAYING, gameStateC.getGameResult());
 		assertTrue(gameStateC.isPlayable());
-		assertEquals(Shape.CROSS, gameStateC.getOwnShape());
+		assertEquals(Shape.CROSS, gameStateC.getPlayerShape());
 		
 		assertEquals(GameType.TIC_TAC_TOE, gameStateD.getGameType());
 		assertEquals("Dieter", gameStateD.getOpponentName());
@@ -36,7 +34,7 @@ class GameStateTicTacToeImplTest {
 		assertEquals(10, gameStateD.getID());
 		assertEquals(GameResult.STILL_PLAYING, gameStateD.getGameResult());
 		assertFalse(gameStateD.isPlayable());
-		assertEquals(Shape.CIRCLE, gameStateD.getOwnShape());
+		assertEquals(Shape.CIRCLE, gameStateD.getPlayerShape());
 		
 	}
 	
@@ -105,6 +103,29 @@ class GameStateTicTacToeImplTest {
 	}
 	
 	@Test
+	void finishTurns() {
+		
+		GameStateTicTacToe gameStateA = new GameStateTicTacToeImpl("Alice", 1, 15, true);
+		GameStateTicTacToe gameStateB = new GameStateTicTacToeImpl("Bernd", 2, 25, false);
+		
+		assertTrue(gameStateA.isPlayable());
+		assertFalse(gameStateB.isPlayable());
+		
+		gameStateA.playerTurnDone();
+		gameStateB.opponentTurnDone();
+		
+		assertFalse(gameStateA.isPlayable());
+		assertTrue(gameStateB.isPlayable());
+		
+		gameStateA.opponentTurnDone();
+		gameStateB.playerTurnDone();
+		
+		assertTrue(gameStateA.isPlayable());
+		assertFalse(gameStateB.isPlayable());
+		
+	}
+	
+	@Test
 	void accessShapeOutOfBounds() {
 		
 		GameStateTicTacToe gameState = new GameStateTicTacToeImpl("Bernd", 2, 10, true);
@@ -146,6 +167,23 @@ class GameStateTicTacToeImplTest {
 		assertThrows(IllegalStateException.class, gameStateDraw::lose);
 		assertThrows(IllegalStateException.class, gameStateDraw::draw);
 		assertThrows(IllegalStateException.class, () -> gameStateWon.setShapeAt(1, 1, Shape.CIRCLE));
+		
+	}
+	
+	@Test
+	void finishWrongTurns() {
+		
+		GameStateTicTacToe gameStateA = new GameStateTicTacToeImpl("Alice", 1, 1, true);
+		GameStateTicTacToe gameStateB = new GameStateTicTacToeImpl("Bernd", 2, 2, false);
+		
+		assertThrows(IllegalStateException.class, gameStateA::opponentTurnDone);
+		assertThrows(IllegalStateException.class, gameStateB::playerTurnDone);
+		
+		gameStateA.playerTurnDone();
+		gameStateB.opponentTurnDone();
+		
+		assertThrows(IllegalStateException.class, gameStateA::playerTurnDone);
+		assertThrows(IllegalStateException.class, gameStateB::opponentTurnDone);
 		
 	}
 	

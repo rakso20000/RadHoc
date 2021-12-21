@@ -1,6 +1,5 @@
 package radhoc.gamestates.impl;
 
-import radhoc.gamestates.GameState;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameType;
 
@@ -11,10 +10,10 @@ import java.util.Arrays;
 
 public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTicTacToe {
 	
-	private final Shape ownShape;
+	private final Shape playerShape;
 	private final Shape[] shapes = new Shape[9];
 	
-	private boolean ownTurn;
+	private boolean playerTurn;
 	private GameResult result = GameResult.STILL_PLAYING;
 	
 	public static GameStateTicTacToe fromStream(String opponentName, long opponentID, long gameID, InputStream inputStream) throws IOException {
@@ -49,21 +48,21 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		
 	}
 	
-	public GameStateTicTacToeImpl(String opponentName, long opponentID, long gameID, boolean ownTurn) {
+	public GameStateTicTacToeImpl(String opponentName, long opponentID, long gameID, boolean playerStarts) {
 		
 		super(GameType.TIC_TAC_TOE, opponentName, opponentID, gameID);
 		
-		ownShape = ownTurn ? Shape.CROSS : Shape.CIRCLE;
-		this.ownTurn = ownTurn;
+		playerShape = playerStarts ? Shape.CROSS : Shape.CIRCLE;
+		playerTurn = playerStarts;
 		
 		Arrays.fill(shapes, Shape.NONE);
 		
 	}
 	
 	@Override
-	public Shape getOwnShape() {
+	public Shape getPlayerShape() {
 		
-		return ownShape;
+		return playerShape;
 		
 	}
 	
@@ -100,7 +99,27 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	@Override
 	public boolean isPlayable() {
 		
-		return result == GameResult.STILL_PLAYING && ownTurn;
+		return result == GameResult.STILL_PLAYING && playerTurn;
+		
+	}
+	
+	@Override
+	public void playerTurnDone() throws IllegalStateException {
+		
+		if (!playerTurn)
+			throw new IllegalStateException("Tried finishing player's turn when it's the opponent's turn");
+		
+		playerTurn = false;
+		
+	}
+	
+	@Override
+	public void opponentTurnDone() throws IllegalStateException {
+		
+		if (playerTurn)
+			throw new IllegalStateException("Tried finishing opponent's turn when it's the player's turn");
+		
+		playerTurn = true;
 		
 	}
 	

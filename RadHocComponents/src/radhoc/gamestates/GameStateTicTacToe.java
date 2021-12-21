@@ -9,10 +9,10 @@ public interface GameStateTicTacToe extends GameState {
 	}
 	
 	/**
-	 * Returns which shape this device's user plays
+	 * Returns which shape this player uses
 	 * @return Shape
 	 */
-	Shape getOwnShape();
+	Shape getPlayerShape();
 	
 	/**
 	 * Returns the shape at the specified position
@@ -40,6 +40,18 @@ public interface GameStateTicTacToe extends GameState {
 	 * @throws IllegalStateException when this GameState is not STILL_PLAYING
 	 */
 	void setShapeAt(int x, int y, Shape shape) throws IllegalArgumentException, IllegalStateException;
+	
+	/**
+	 * Finishes this player's turn
+	 * @throws IllegalStateException when it's not this player's turn
+	 */
+	void playerTurnDone() throws IllegalStateException;
+	
+	/**
+	 * Finishes the opponent's turn
+	 * @throws IllegalStateException when it's not the opponent's turn
+	 */
+	void opponentTurnDone() throws IllegalStateException;
 	
 	/**
 	 * Marks this game as won
