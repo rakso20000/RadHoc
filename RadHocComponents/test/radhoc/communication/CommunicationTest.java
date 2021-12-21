@@ -14,9 +14,11 @@ public class CommunicationTest {
 	
 	private SharkTestPeerFS alicePeer;
 	private SharkTestPeerFS berndPeer;
+	private SharkTestPeerFS claraPeer;
 	
-	private Communication communicationAlice;
-	private Communication communicationBernd;
+	private Communication communicationA;
+	private Communication communicationB;
+	private Communication communicationC;
 	
 	@BeforeEach
 	void setUp() throws IOException, SharkException {
@@ -27,37 +29,56 @@ public class CommunicationTest {
 		
 		alicePeer = new SharkTestPeerFS("alice", directory + File.separator + "alice");
 		berndPeer = new SharkTestPeerFS("bernd", directory + File.separator + "bernd");
+		claraPeer = new SharkTestPeerFS("clara", directory + File.separator + "clara");
 		
-		communicationAlice = CommunicationFactory.createCommunication(1, "Alice", alicePeer);
-		communicationBernd = CommunicationFactory.createCommunication(2, "Bernd", berndPeer);
+		communicationA = CommunicationFactory.createCommunication(1, "Alice", alicePeer);
+		communicationB = CommunicationFactory.createCommunication(2, "Bernd", berndPeer);
+		communicationC = CommunicationFactory.createCommunication(3, "Clara", claraPeer);
 		
 		alicePeer.start();
 		berndPeer.start();
+		claraPeer.start();
+		
+	}
+	
+	private void encounter() throws SharkException, IOException, InterruptedException {
+		
+		alicePeer.getASAPTestPeerFS().startEncounter(7777, berndPeer.getASAPTestPeerFS());
+		Thread.sleep(250);
+		alicePeer.getASAPTestPeerFS().stopEncounter(berndPeer.getASAPTestPeerFS());
+		
+		berndPeer.getASAPTestPeerFS().startEncounter(7778, claraPeer.getASAPTestPeerFS());
+		Thread.sleep(250);
+		berndPeer.getASAPTestPeerFS().stopEncounter(claraPeer.getASAPTestPeerFS());
 		
 	}
 	
 	@Test
-	void sendMove() throws SharkException, IOException {
+	void sendMove() throws SharkException, IOException, InterruptedException {
 		
 		byte[] moveData = new byte[] {
-				15, 17, 26, 19, 123, 13, -12, -36, 15
+			15, 17, 26, 19, 123, 13, -12, -36, 15
 		};
 		
-		MockMoveListener mockListener = new MockMoveListener();
+		MockMoveListener mockListenerA = new MockMoveListener();
+		MockMoveListener mockListenerB = new MockMoveListener();
+		MockMoveListener mockListenerC = new MockMoveListener();
 		
-		communicationBernd.setMoveListener(mockListener);
+		communicationA.setMoveListener(mockListenerA);
+		communicationB.setMoveListener(mockListenerB);
+		communicationC.setMoveListener(mockListenerC);
 		
-		communicationAlice.sendMove(2, 13, moveData);
+		mockListenerA.assertNotCalled();
+		mockListenerB.assertNotCalled();
+		mockListenerC.assertNotCalled();
 		
-		alicePeer.getASAPTestPeerFS().startEncounter(7777, berndPeer.getASAPTestPeerFS());
+		communicationA.sendMove(3, 13, moveData);
 		
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		encounter();
 		
-		mockListener.assertCalled(13, moveData);
+		mockListenerA.assertNotCalled();
+		mockListenerB.assertNotCalled();
+		mockListenerC.assertCalled(13, moveData);
 		
 	}
 	

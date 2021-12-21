@@ -48,6 +48,7 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 			DataOutputStream dos = new DataOutputStream(baos)
 		) {
 			
+			dos.writeLong(recipientID);
 			dos.writeLong(gameID);
 			dos.write(message);
 			
@@ -113,6 +114,11 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 				ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 				DataInputStream dis = new DataInputStream(bais)
 			) {
+				
+				long recipientID = dis.readLong();
+				
+				if (recipientID != userID)
+					continue;
 				
 				gameID = dis.readLong();
 				
