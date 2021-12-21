@@ -16,6 +16,7 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	private static final String MOVE_URI = "radhoc://move";
 	private static final String GLOBAL_INVITE_URI = "radhoc://global_invite";
 	private static final String INVITE_URI = "radhoc://invite";
+	private static final String ACCEPT_INVITE_URI = "radhoc://accept_invite";
 	
 	private final long userID;
 	private final String username;
@@ -152,7 +153,38 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	}
 	
 	@Override
-	public void acceptInvite(String userName, long userID, long gameID) {
+	public void acceptInvite(long recipientID, long gameID, GameType gameType) {
+		
+		byte[] bytes;
+		
+		try (
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(baos)
+		) {
+			
+			dos.writeLong(recipientID);
+			dos.writeUTF(username);
+			dos.writeLong(userID);
+			dos.writeLong(gameID);
+			dos.writeByte(gameType.toByte());
+			
+			bytes = baos.toByteArray();
+			
+		} catch (IOException e) {
+			
+			throw new AssertionError();
+			
+		}
+		
+		try {
+			
+			asapPeer.sendASAPMessage(ASAP_FORMAT, ACCEPT_INVITE_URI, bytes);
+			
+		} catch (ASAPException e) {
+			
+			e.printStackTrace();
+			
+		}
 		
 	}
 	
@@ -173,6 +205,7 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		case MOVE_URI -> onMoveMessages(asapMessages.getMessages());
 		case GLOBAL_INVITE_URI -> onGlobalInvite(asapMessages.getMessages());
 		case INVITE_URI -> onInvite(asapMessages.getMessages());
+		case ACCEPT_INVITE_URI -> onInviteAccepted(asapMessages.getMessages());
 		default -> System.err.printf("Unknown URI: %s%n", asapMessages.getURI());
 		}
 		
@@ -205,7 +238,8 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 				
 			} catch (IOException e) {
 				
-				throw new AssertionError();
+				//malformed message
+				continue;
 				
 			}
 			
@@ -236,7 +270,8 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 				
 			} catch (IOException e) {
 				
-				throw new AssertionError();
+				//malformed message
+				continue;
 				
 			}
 			
@@ -272,11 +307,51 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 				
 			} catch (IOException e) {
 				
-				throw new AssertionError();
+				//malformed message
+				continue;
 				
 			}
 			
 			inviteListener.receiveInvite(senderName, senderID, gameType);
+			
+		}
+		
+	}
+	
+	private void onInviteAccepted(Iterator<byte[]> iter) {
+		
+		while (iter.hasNext()) {
+			
+			byte[] bytes = iter.next();
+			
+			String senderName;
+			long senderID;
+			long gameID;
+			GameType gameType;
+			
+			try (
+				ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+				DataInputStream dis = new DataInputStream(bais)
+			) {
+				
+				long recipientID = dis.readLong();
+				
+				if (recipientID != userID)
+					continue;
+				
+				senderName = dis.readUTF();
+				senderID = dis.readLong();
+				gameID = dis.readLong();
+				gameType = GameType.fromByte(dis.readByte());
+				
+			} catch (IOException e) {
+				
+				//malformed message
+				continue;
+				
+			}
+			
+			inviteListener.inviteAccepted(senderName, senderID, gameID, gameType);
 			
 		}
 		

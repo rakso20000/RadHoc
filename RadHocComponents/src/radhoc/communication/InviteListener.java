@@ -15,10 +15,11 @@ public interface InviteListener {
 	
 	/**
 	 * Receive confirmation of an invitation that has been accepted
-	 * @param userName Name of the user who accepted the invitation
-	 * @param userID ID of the user who accepted the invitation
+	 * @param senderName Name of the user who accepted the invitation
+	 * @param senderID ID of the user who accepted the invitation
 	 * @param gameID ID chosen for the newly commencing game
+	 * @param gameType GameType of the newly commencing game
 	 */
-	void inviteAccepted(String userName, long userID, long gameID);
+	void inviteAccepted(String senderName, long senderID, long gameID, GameType gameType);
 	
 }

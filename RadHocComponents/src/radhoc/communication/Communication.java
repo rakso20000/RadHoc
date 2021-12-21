@@ -40,11 +40,11 @@ public interface Communication extends SharkComponent {
 	/**
 	 * Accepts an invitation from another user
 	 * and tells said user which game id to use for this game.
-	 * @param userName Name of this device's user to send to the recipient
-	 * @param userID ID of the recipient
-	 * @param gameID ID for the game chosen by this device
+	 * @param recipientID ID of the recipient
+	 * @param gameID ID for the game, chosen by this device
+	 * @param gameType GameType of the new game
 	 */
-	void acceptInvite(String userName, long userID, long gameID);
+	void acceptInvite(long recipientID, long gameID, GameType gameType);
 	
 	/**
 	 * Sets an InviteListener to receive all open invitations

@@ -21,6 +21,14 @@ public class CommunicationTest {
 	private Communication communicationB;
 	private Communication communicationC;
 	
+	private MockMoveListener moveListenerA;
+	private MockMoveListener moveListenerB;
+	private MockMoveListener moveListenerC;
+	
+	private MockInviteListener inviteListenerA;
+	private MockInviteListener inviteListenerB;
+	private MockInviteListener inviteListenerC;
+	
 	@BeforeEach
 	void setUp() throws IOException, SharkException {
 		
@@ -36,6 +44,22 @@ public class CommunicationTest {
 		communicationB = CommunicationFactory.createCommunication(2, "Bernd", berndPeer);
 		communicationC = CommunicationFactory.createCommunication(3, "Clara", claraPeer);
 		
+		moveListenerA = new MockMoveListener();
+		moveListenerB = new MockMoveListener();
+		moveListenerC = new MockMoveListener();
+		
+		communicationA.setMoveListener(moveListenerA);
+		communicationB.setMoveListener(moveListenerB);
+		communicationC.setMoveListener(moveListenerC);
+		
+		inviteListenerA = new MockInviteListener();
+		inviteListenerB = new MockInviteListener();
+		inviteListenerC = new MockInviteListener();
+		
+		communicationA.setInviteListener(inviteListenerA);
+		communicationB.setInviteListener(inviteListenerB);
+		communicationC.setInviteListener(inviteListenerC);
+		
 		alicePeer.start();
 		berndPeer.start();
 		claraPeer.start();
@@ -44,13 +68,17 @@ public class CommunicationTest {
 	
 	private void encounter(int n) throws SharkException, IOException, InterruptedException {
 		
-		alicePeer.getASAPTestPeerFS().startEncounter(4000 + n * 2, berndPeer.getASAPTestPeerFS());
-		Thread.sleep(250);
+		alicePeer.getASAPTestPeerFS().startEncounter(4000 + n * 3, berndPeer.getASAPTestPeerFS());
+		Thread.sleep(200);
 		alicePeer.getASAPTestPeerFS().stopEncounter(berndPeer.getASAPTestPeerFS());
 		
-		berndPeer.getASAPTestPeerFS().startEncounter(4001 + n * 2, claraPeer.getASAPTestPeerFS());
-		Thread.sleep(250);
+		berndPeer.getASAPTestPeerFS().startEncounter(4001 + n * 3, claraPeer.getASAPTestPeerFS());
+		Thread.sleep(200);
 		berndPeer.getASAPTestPeerFS().stopEncounter(claraPeer.getASAPTestPeerFS());
+		
+		alicePeer.getASAPTestPeerFS().startEncounter(4002 + n * 3, berndPeer.getASAPTestPeerFS());
+		Thread.sleep(200);
+		alicePeer.getASAPTestPeerFS().stopEncounter(berndPeer.getASAPTestPeerFS());
 		
 	}
 	
@@ -61,76 +89,70 @@ public class CommunicationTest {
 			15, 17, 26, 19, 123, 13, -12, -36, 15
 		};
 		
-		MockMoveListener mockListenerA = new MockMoveListener();
-		MockMoveListener mockListenerB = new MockMoveListener();
-		MockMoveListener mockListenerC = new MockMoveListener();
-		
-		communicationA.setMoveListener(mockListenerA);
-		communicationB.setMoveListener(mockListenerB);
-		communicationC.setMoveListener(mockListenerC);
-		
-		mockListenerC.assertNotCalled();
+		moveListenerC.assertNotCalled();
 		
 		communicationA.sendMove(3, 13, moveData);
 		
 		encounter(0);
 		
-		mockListenerA.assertNotCalled();
-		mockListenerB.assertNotCalled();
-		mockListenerC.assertCalled(13, moveData);
+		moveListenerA.assertNotCalled();
+		moveListenerB.assertNotCalled();
+		moveListenerC.assertCalled(13, moveData);
 		
 	}
 	
 	@Test
 	void sendGlobalInvite() throws SharkException, IOException, InterruptedException {
 		
-		MockInviteListener mockListenerA = new MockInviteListener();
-		MockInviteListener mockListenerB = new MockInviteListener();
-		MockInviteListener mockListenerC = new MockInviteListener();
-		
-		communicationA.setInviteListener(mockListenerA);
-		communicationB.setInviteListener(mockListenerB);
-		communicationC.setInviteListener(mockListenerC);
-		
-		mockListenerB.assertNotInvited();
-		mockListenerC.assertNotInvited();
+		inviteListenerB.assertNotInvited();
+		inviteListenerC.assertNotInvited();
 		
 		communicationA.sendInvite(GameType.TIC_TAC_TOE);
 		
 		encounter(1);
 		
-		mockListenerA.assertNotInvited();
-		mockListenerB.assertInvited("Alice", 1, GameType.TIC_TAC_TOE);
-		mockListenerC.assertInvited("Alice", 1, GameType.TIC_TAC_TOE);
-		mockListenerA.assertNotAccepted();
-		mockListenerB.assertNotAccepted();
-		mockListenerC.assertNotAccepted();
+		inviteListenerA.assertNotInvited();
+		inviteListenerB.assertInvited("Alice", 1, GameType.TIC_TAC_TOE);
+		inviteListenerC.assertInvited("Alice", 1, GameType.TIC_TAC_TOE);
+		inviteListenerA.assertNotAccepted();
+		inviteListenerB.assertNotAccepted();
+		inviteListenerC.assertNotAccepted();
 		
 	}
 	
 	@Test
 	void sendInvite() throws SharkException, IOException, InterruptedException {
 		
-		MockInviteListener mockListenerA = new MockInviteListener();
-		MockInviteListener mockListenerB = new MockInviteListener();
-		MockInviteListener mockListenerC = new MockInviteListener();
-		
-		communicationA.setInviteListener(mockListenerA);
-		communicationB.setInviteListener(mockListenerB);
-		communicationC.setInviteListener(mockListenerC);
-		
-		mockListenerC.assertNotInvited();
+		inviteListenerC.assertNotInvited();
 		
 		communicationB.sendInvite("clARA", GameType.TIC_TAC_TOE);
 		
 		encounter(2);
 		
-		mockListenerA.assertNotInvited();
-		mockListenerB.assertNotInvited();
-		mockListenerC.assertInvited("Bernd", 2, GameType.TIC_TAC_TOE);
-		mockListenerA.assertNotAccepted();
-		mockListenerB.assertNotAccepted();
-		mockListenerC.assertNotAccepted();
+		inviteListenerA.assertNotInvited();
+		inviteListenerB.assertNotInvited();
+		inviteListenerC.assertInvited("Bernd", 2, GameType.TIC_TAC_TOE);
+		inviteListenerA.assertNotAccepted();
+		inviteListenerB.assertNotAccepted();
+		inviteListenerC.assertNotAccepted();
+		
+	}
+	
+	@Test
+	void acceptInvite() throws SharkException, IOException, InterruptedException {
+		
+		inviteListenerA.assertNotAccepted();
+		
+		communicationC.acceptInvite(1, 16, GameType.TIC_TAC_TOE);
+		
+		encounter(3);
+		
+		inviteListenerA.assertNotInvited();
+		inviteListenerB.assertNotInvited();
+		inviteListenerC.assertNotInvited();
+		inviteListenerA.assertAccepted("Clara", 3, 16, GameType.TIC_TAC_TOE);
+		inviteListenerB.assertNotAccepted();
+		inviteListenerC.assertNotAccepted();
 		
 	}
 	
