@@ -37,7 +37,7 @@ public class GameStateManagerTest {
 	@Test
 	void createGameState() {
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Dieter", 420, 1337);
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Dieter", 420, 1337, true);
 		
 		List<GameState> gameStates = gsm.getAllGameStates();
 		assertEquals(1, gameStates.size());
@@ -53,8 +53,8 @@ public class GameStateManagerTest {
 	@Test
 	void findGameState() {
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Lara", 3, 5);
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Hans", 7, 8);
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Lara", 3, 5, true);
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Hans", 7, 8, false);
 		
 		GameState gsLara = gsm.getGameState(5);
 		assertEquals("Lara", gsLara.getOpponentName());
@@ -66,17 +66,15 @@ public class GameStateManagerTest {
 		assertEquals(7, gsHans.getOpponentID());
 		assertEquals(8, gsHans.getID());
 		
-		assertThrows(IllegalArgumentException.class, () -> {
-			gsm.getGameState(126);
-		});
+		assertThrows(IllegalArgumentException.class, () -> gsm.getGameState(126));
 		
 	}
 	
 	@Test
 	void saveGameStates() {
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Sara", 1, 2);
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Peter", 3, 4);
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Sara", 1, 2, true);
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Peter", 3, 4, false);
 		
 		gsm.save();
 		gsm = GameStateManagerFactory.createGameStateManager(directory);
@@ -91,7 +89,7 @@ public class GameStateManagerTest {
 		assertEquals(3, gsPeter.getOpponentID());
 		assertEquals(4, gsPeter.getID());
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Clara", 5, 6);
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Clara", 5, 6, false);
 		
 		gsm.save();
 		gsm = GameStateManagerFactory.createGameStateManager(directory);

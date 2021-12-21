@@ -13,10 +13,10 @@ public abstract class GameStateImpl implements GameState {
 	private final long opponentID;
 	private final long gameID;
 	
-	public static GameState create(GameType gameType, String opponentName, long opponentID, long gameID) {
+	public static GameState create(GameType gameType, String opponentName, long opponentID, long gameID, boolean playerStarts) {
 		
 		return switch (gameType) {
-			case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, true); //TODO
+			case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, playerStarts);
 		};
 		
 	}

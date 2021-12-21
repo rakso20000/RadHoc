@@ -53,9 +53,9 @@ public class GameStateManagerImpl implements GameStateManager {
 	}
 	
 	@Override
-	public void createGameState(GameType gameType, String opponentName, int opponentID, int gameID) {
+	public void createGameState(GameType gameType, String opponentName, int opponentID, int gameID, boolean playerStarts) {
 		
-		GameState gs = GameStateImpl.create(gameType, opponentName, opponentID, gameID);
+		GameState gs = GameStateImpl.create(gameType, opponentName, opponentID, gameID, playerStarts);
 		
 		gameStates.add(gs);
 		
