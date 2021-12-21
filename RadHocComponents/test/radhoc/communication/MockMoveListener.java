@@ -34,8 +34,7 @@ public class MockMoveListener implements MoveListener {
 		assertTrue(receivedMove);
 		assertFalse(receivedMoveTwice);
 		
-		//TODO reenable
-		//assertEquals(gameID, this.gameID);
+		assertEquals(gameID, this.gameID);
 		assertArrayEquals(message, this.message);
 		
 		receivedMove = false;

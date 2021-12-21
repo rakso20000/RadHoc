@@ -7,7 +7,7 @@ import radhoc.communication.InviteListener;
 import radhoc.communication.MoveListener;
 import radhoc.gamestates.GameType;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,8 +41,26 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	@Override
 	public void sendMove(long recipientID, long gameID, byte[] message) {
 		
+		byte[] bytes;
+		
+		try (
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(baos)
+		) {
+			
+			dos.writeLong(gameID);
+			dos.write(message);
+			
+			bytes = baos.toByteArray();
+			
+		} catch (IOException e) {
+			
+			throw new AssertionError();
+			
+		}
+		
 		try {
-			asapPeer.sendASAPMessage(ASAP_FORMAT, MOVE_URI, message);
+			asapPeer.sendASAPMessage(ASAP_FORMAT, MOVE_URI, bytes);
 		} catch (ASAPException e) {
 			e.printStackTrace();
 		}
@@ -86,9 +104,29 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		
 		while (iter.hasNext()) {
 			
-			byte[] message = iter.next();
+			byte[] bytes = iter.next();
 			
-			moveListener.onMove(0, message);
+			long gameID;
+			byte[] message;
+			
+			try (
+				ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+				DataInputStream dis = new DataInputStream(bais)
+			) {
+				
+				gameID = dis.readLong();
+				
+				message = new byte[dis.available()];
+				
+				dis.readFully(message);
+				
+			} catch (IOException e) {
+				
+				throw new AssertionError();
+				
+			}
+			
+			moveListener.onMove(gameID, message);
 			
 		}
 		
