@@ -14,11 +14,14 @@ import java.util.List;
 public class CommunicationImpl implements Communication, ASAPMessageReceivedListener {
 	
 	private static final String MOVE_URI = "radhoc://move";
+	private static final String GLOBAL_INVITE_URI = "radhoc://global_invite";
+	private static final String INVITE_URI = "radhoc://invite";
 	
 	private final long userID;
 	private final String username;
 	
 	private MoveListener moveListener;
+	private InviteListener inviteListener;
 	
 	private ASAPPeer asapPeer;
 	
@@ -61,9 +64,13 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		}
 		
 		try {
+			
 			asapPeer.sendASAPMessage(ASAP_FORMAT, MOVE_URI, bytes);
+			
 		} catch (ASAPException e) {
+			
 			e.printStackTrace();
+			
 		}
 		
 	}
@@ -78,10 +85,69 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	@Override
 	public void sendInvite(GameType gameType) {
 		
+		byte[] bytes;
+		
+		try (
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(baos)
+		) {
+			
+			dos.writeUTF(username);
+			dos.writeLong(userID);
+			dos.writeByte(gameType.toByte());
+			
+			bytes = baos.toByteArray();
+			
+		} catch (IOException e) {
+			
+			throw new AssertionError();
+			
+		}
+		
+		try {
+			
+			asapPeer.sendASAPMessage(ASAP_FORMAT, GLOBAL_INVITE_URI, bytes);
+			
+		} catch (ASAPException e) {
+			
+			e.printStackTrace();
+			
+		}
+		
 	}
 	
 	@Override
-	public void sendInvite(String name, GameType gameType) {
+	public void sendInvite(String recipientName, GameType gameType) {
+		
+		byte[] bytes;
+		
+		try (
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(baos)
+		) {
+			
+			dos.writeUTF(recipientName);
+			dos.writeUTF(username);
+			dos.writeLong(userID);
+			dos.writeByte(gameType.toByte());
+			
+			bytes = baos.toByteArray();
+			
+		} catch (IOException e) {
+			
+			throw new AssertionError();
+			
+		}
+		
+		try {
+			
+			asapPeer.sendASAPMessage(ASAP_FORMAT, INVITE_URI, bytes);
+			
+		} catch (ASAPException e) {
+			
+			e.printStackTrace();
+			
+		}
 		
 	}
 	
@@ -93,6 +159,8 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	@Override
 	public void setInviteListener(InviteListener listener) {
 		
+		inviteListener = listener;
+		
 	}
 	
 	@Override
@@ -101,7 +169,16 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		if (!asapMessages.getFormat().equals(ASAP_FORMAT))
 			return;
 		
-		Iterator<byte[]> iter = asapMessages.getMessages();
+		switch (asapMessages.getURI().toString()) {
+		case MOVE_URI -> onMoveMessages(asapMessages.getMessages());
+		case GLOBAL_INVITE_URI -> onGlobalInvite(asapMessages.getMessages());
+		case INVITE_URI -> onInvite(asapMessages.getMessages());
+		default -> System.err.printf("Unknown URI: %s%n", asapMessages.getURI());
+		}
+		
+	}
+	
+	private void onMoveMessages(Iterator<byte[]> iter) {
 		
 		while (iter.hasNext()) {
 			
@@ -133,6 +210,73 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 			}
 			
 			moveListener.onMove(gameID, message);
+			
+		}
+		
+	}
+	
+	private void onGlobalInvite(Iterator<byte[]> iter) {
+		
+		while (iter.hasNext()) {
+			
+			byte[] bytes = iter.next();
+			
+			String senderName;
+			long senderID;
+			GameType gameType;
+			
+			try (
+				ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+				DataInputStream dis = new DataInputStream(bais)
+			) {
+				
+				senderName = dis.readUTF();
+				senderID = dis.readLong();
+				gameType = GameType.fromByte(dis.readByte());
+				
+			} catch (IOException e) {
+				
+				throw new AssertionError();
+				
+			}
+			
+			inviteListener.receiveInvite(senderName, senderID, gameType);
+			
+		}
+		
+	}
+	
+	private void onInvite(Iterator<byte[]> iter) {
+		
+		while (iter.hasNext()) {
+			
+			byte[] bytes = iter.next();
+			
+			String senderName;
+			long senderID;
+			GameType gameType;
+			
+			try (
+				ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+				DataInputStream dis = new DataInputStream(bais)
+			) {
+				
+				String recipientName = dis.readUTF();
+				
+				if (!recipientName.equalsIgnoreCase(username))
+					continue;
+				
+				senderName = dis.readUTF();
+				senderID = dis.readLong();
+				gameType = GameType.fromByte(dis.readByte());
+				
+			} catch (IOException e) {
+				
+				throw new AssertionError();
+				
+			}
+			
+			inviteListener.receiveInvite(senderName, senderID, gameType);
 			
 		}
 		

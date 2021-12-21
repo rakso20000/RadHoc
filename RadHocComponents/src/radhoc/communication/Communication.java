@@ -32,10 +32,10 @@ public interface Communication extends SharkComponent {
 	
 	/**
 	 * Sends an invitation for a specific GameType directed to a specific user.
-	 * @param name username of the recipient of the invitation
+	 * @param recipientName username of the recipient of the invitation
 	 * @param gameType
 	 */
-	void sendInvite(String name, GameType gameType);
+	void sendInvite(String recipientName, GameType gameType);
 	
 	/**
 	 * Accepts an invitation from another user
