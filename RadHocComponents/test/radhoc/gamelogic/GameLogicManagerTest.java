@@ -25,7 +25,7 @@ public class GameLogicManagerTest {
 
         Path directory = Files.createTempDirectory("radhoctests");
 
-        gsm = GameStateManagerFactory.createGameStateManager(directory);
+        gsm = GameStateManagerFactory.createGameStateManager(directory.toFile());
         glm = GameLogicManagerFactory.createGameLogicManager(directory);
 
     }
