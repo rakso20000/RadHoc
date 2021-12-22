@@ -25,15 +25,15 @@ public abstract class GameStateImpl implements GameState {
 	
 	public static GameState fromStream(InputStream inputStream) throws IOException {
 		
-		try (ObjectInputStream ois = new ObjectInputStream(inputStream)) {
+		try (DataInputStream dis = new DataInputStream(inputStream)) {
 			
-			GameType gameType = GameType.fromByte(ois.readByte());
-			String opponentName = ois.readUTF();
-			long opponentID = ois.readLong();
-			long gameID = ois.readLong();
+			GameType gameType = GameType.fromByte(dis.readByte());
+			String opponentName = dis.readUTF();
+			long opponentID = dis.readLong();
+			long gameID = dis.readLong();
 			
 			return switch (gameType) {
-				case TIC_TAC_TOE -> GameStateTicTacToeImpl.fromStream(opponentName, opponentID, gameID, inputStream);
+				case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, inputStream);
 			};
 			
 		}
@@ -93,14 +93,14 @@ public abstract class GameStateImpl implements GameState {
 	
 	public void writeState(OutputStream outputStream) throws IOException {
 		
-		try (ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
+		try (DataOutputStream dos = new DataOutputStream(outputStream)) {
 			
-			oos.writeByte(gameType.toByte());
-			oos.writeUTF(opponentName);
-			oos.writeLong(opponentID);
-			oos.writeLong(gameID);
+			dos.writeByte(gameType.toByte());
+			dos.writeUTF(opponentName);
+			dos.writeLong(opponentID);
+			dos.writeLong(gameID);
 			
-			oos.flush();
+			dos.flush();
 			
 			writeSpecifics(outputStream);
 			

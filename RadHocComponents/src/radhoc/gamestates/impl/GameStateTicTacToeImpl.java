@@ -1,11 +1,11 @@
 package radhoc.gamestates.impl;
 
+import radhoc.gamestates.GameResult;
+import radhoc.gamestates.GameStateParseException;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameType;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Arrays;
 
 public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTicTacToe {
@@ -15,17 +15,6 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	
 	private boolean playerTurn;
 	private GameResult result = GameResult.STILL_PLAYING;
-	
-	public static GameStateTicTacToe fromStream(String opponentName, long opponentID, long gameID, InputStream inputStream) throws IOException {
-		
-		GameStateTicTacToeImpl gameState = new GameStateTicTacToeImpl(opponentName, opponentID, gameID, true); //TODO
-		
-		for (int i = 0; i < gameState.shapes.length; ++i)
-			gameState.shapes[i] = byteToShape(inputStream.read());
-		
-		return gameState;
-		
-	}
 	
 	private static byte shapeToByte(Shape shape) {
 		
@@ -56,6 +45,25 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		playerTurn = playerStarts;
 		
 		Arrays.fill(shapes, Shape.NONE);
+		
+	}
+	
+	public GameStateTicTacToeImpl(String opponentName, long opponentID, long gameID, InputStream inputStream) throws IOException {
+		
+		super(GameType.TIC_TAC_TOE, opponentName, opponentID, gameID);
+		
+		try (
+			DataInputStream dis = new DataInputStream(inputStream)
+		) {
+			
+			playerShape = byteToShape(dis.readByte());
+			playerTurn = dis.readBoolean();
+			result = GameResult.fromByte(dis.readByte());
+			
+			for (int i = 0; i < shapes.length; ++i)
+				shapes[i] = byteToShape(inputStream.read());
+			
+		}
 		
 	}
 	
@@ -168,8 +176,19 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	@Override
 	protected void writeSpecifics(OutputStream outputStream) throws IOException {
 		
-		for (Shape shape : shapes)
-			outputStream.write(shapeToByte(shape));
+		try (
+			DataOutputStream dos = new DataOutputStream(outputStream)
+		) {
+			
+			dos.writeByte(shapeToByte(playerShape));
+			dos.writeBoolean(playerTurn);
+			dos.writeByte(result.toByte());
+			
+			for (Shape shape : shapes)
+				dos.writeByte(shapeToByte(shape));
+			
+		}
+		
 		
 	}
 	

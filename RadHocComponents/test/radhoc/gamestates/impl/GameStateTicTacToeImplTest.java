@@ -1,7 +1,7 @@
 package radhoc.gamestates.impl;
 
 import org.junit.jupiter.api.Test;
-import radhoc.gamestates.GameState.GameResult;
+import radhoc.gamestates.GameResult;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameStateTicTacToe.Shape;
 import radhoc.gamestates.GameType;
@@ -189,7 +189,7 @@ class GameStateTicTacToeImplTest {
 	}
 	
 	@Test
-	void readWriteGameState() throws IOException {
+	void readWriteShapes() throws IOException {
 		
 		GameStateTicTacToeImpl gameState = new GameStateTicTacToeImpl("Alice", 1, 10, true);
 		
@@ -201,27 +201,7 @@ class GameStateTicTacToeImplTest {
 		gameState.setShapeAt(1, 2, Shape.CIRCLE);
 		gameState.setShapeAt(0, 0, Shape.CROSS);
 		
-		byte[] bytes;
-		
-		try (
-			ByteArrayOutputStream baos = new ByteArrayOutputStream()
-		) {
-			
-			gameState.writeSpecifics(baos);
-			
-			bytes = baos.toByteArray();
-			
-		}
-		
-		GameStateTicTacToe gameStateNew;
-		
-		try (
-			ByteArrayInputStream bais = new ByteArrayInputStream(bytes)
-		) {
-			
-			gameStateNew = GameStateTicTacToeImpl.fromStream("Alice", 1, 10, bais);
-			
-		}
+		GameStateTicTacToe gameStateNew = readWrite(gameState);
 		
 		assertEquals(Shape.CROSS, gameStateNew.getShapeAt(0, 0));
 		assertEquals(Shape.CIRCLE, gameStateNew.getShapeAt(0, 1));
@@ -232,6 +212,83 @@ class GameStateTicTacToeImplTest {
 		assertEquals(Shape.CIRCLE, gameStateNew.getShapeAt(2, 0));
 		assertEquals(Shape.NONE, gameStateNew.getShapeAt(2, 1));
 		assertEquals(Shape.CROSS, gameStateNew.getShapeAt(2, 2));
+		
+	}
+	
+	@Test
+	void readWriteData() throws IOException {
+		
+		GameStateTicTacToeImpl gameStateA = new GameStateTicTacToeImpl("Alice", 1, -1, true);
+		GameStateTicTacToeImpl gameStateB = new GameStateTicTacToeImpl("Bernd", 2, -2, true);
+		GameStateTicTacToeImpl gameStateC = new GameStateTicTacToeImpl("Clara", 3, -3, false);
+		GameStateTicTacToeImpl gameStateD = new GameStateTicTacToeImpl("Dieter", 4, -4, false);
+		
+		gameStateB.playerTurnDone();
+		gameStateD.opponentTurnDone();
+		
+		GameStateTicTacToe gameStateNewA = readWrite(gameStateA);
+		GameStateTicTacToe gameStateNewB = readWrite(gameStateB);
+		GameStateTicTacToe gameStateNewC = readWrite(gameStateC);
+		GameStateTicTacToe gameStateNewD = readWrite(gameStateD);
+		
+		assertEquals(Shape.CROSS, gameStateNewA.getPlayerShape());
+		assertEquals(Shape.CROSS, gameStateNewB.getPlayerShape());
+		assertEquals(Shape.CIRCLE, gameStateNewC.getPlayerShape());
+		assertEquals(Shape.CIRCLE, gameStateNewD.getPlayerShape());
+		
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewA.getGameResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewB.getGameResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewC.getGameResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewD.getGameResult());
+		
+		assertTrue(gameStateNewA.isPlayable());
+		assertFalse(gameStateNewB.isPlayable());
+		assertFalse(gameStateNewC.isPlayable());
+		assertTrue(gameStateNewD.isPlayable());
+		
+		gameStateB.win();
+		gameStateC.lose();
+		gameStateD.draw();
+		
+		gameStateNewA = readWrite(gameStateA);
+		gameStateNewB = readWrite(gameStateB);
+		gameStateNewC = readWrite(gameStateC);
+		gameStateNewD = readWrite(gameStateD);
+		
+		assertEquals(Shape.CROSS, gameStateNewA.getPlayerShape());
+		assertEquals(Shape.CROSS, gameStateNewB.getPlayerShape());
+		assertEquals(Shape.CIRCLE, gameStateNewC.getPlayerShape());
+		assertEquals(Shape.CIRCLE, gameStateNewD.getPlayerShape());
+		
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewA.getGameResult());
+		assertEquals(GameResult.VICTORY, gameStateNewB.getGameResult());
+		assertEquals(GameResult.DEFEAT, gameStateNewC.getGameResult());
+		assertEquals(GameResult.DRAW, gameStateNewD.getGameResult());
+		
+		assertTrue(gameStateNewA.isPlayable());
+		assertFalse(gameStateNewB.isPlayable());
+		assertFalse(gameStateNewC.isPlayable());
+		assertFalse(gameStateNewD.isPlayable());
+		
+	}
+	
+	private GameStateTicTacToe readWrite(GameStateTicTacToeImpl gameState) throws IOException {
+		
+		try (
+			ByteArrayOutputStream baos = new ByteArrayOutputStream()
+		) {
+			
+			gameState.writeSpecifics(baos);
+			
+			try (
+				ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())
+			) {
+				
+				return new GameStateTicTacToeImpl(gameState.getOpponentName(), gameState.getOpponentID(), gameState.getID(), bais);
+				
+			}
+			
+		}
 		
 	}
 	

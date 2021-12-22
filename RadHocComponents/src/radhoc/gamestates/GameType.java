@@ -1,7 +1,5 @@
 package radhoc.gamestates;
 
-import radhoc.gamestates.impl.GameStateParseException;
-
 public enum GameType {
 	
 	TIC_TAC_TOE;

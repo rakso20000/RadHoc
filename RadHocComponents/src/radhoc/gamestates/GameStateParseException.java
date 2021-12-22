@@ -1,4 +1,4 @@
-package radhoc.gamestates.impl;
+package radhoc.gamestates;
 
 import java.io.IOException;
 
