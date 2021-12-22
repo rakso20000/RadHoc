@@ -17,6 +17,8 @@ public class GameStateManagerImpl implements GameStateManager {
 	
 	private final List<GameState> gameStates = new ArrayList<>();
 	
+	private UpdateListener updateListener;
+	
 	public GameStateManagerImpl(File directory) {
 		
 		this.directory = directory;
@@ -59,11 +61,15 @@ public class GameStateManagerImpl implements GameStateManager {
 		
 		gameStates.add(gs);
 		
+		update();
+		
 	}
 	
 	@Override
 	public void setUpdateListener(UpdateListener listener) {
-		//TODO
+		
+		updateListener = listener;
+		
 	}
 	
 	@Override
@@ -101,6 +107,13 @@ public class GameStateManagerImpl implements GameStateManager {
 			}
 			
 		}
+		
+	}
+	
+	private void update() {
+		
+		if (updateListener != null)
+			updateListener.onUpdate();
 		
 	}
 	

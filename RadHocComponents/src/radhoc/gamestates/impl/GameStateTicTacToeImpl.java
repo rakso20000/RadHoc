@@ -87,6 +87,8 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		
 		shapes[x * 3 + y] = shape;
 		
+		update();
+		
 	}
 	
 	@Override
@@ -111,6 +113,8 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		
 		playerTurn = false;
 		
+		update();
+		
 	}
 	
 	@Override
@@ -120,6 +124,8 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 			throw new IllegalStateException("Tried finishing opponent's turn when it's the player's turn");
 		
 		playerTurn = true;
+		
+		update();
 		
 	}
 	
@@ -131,6 +137,8 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		
 		result = GameResult.VICTORY;
 		
+		update();
+		
 	}
 	
 	@Override
@@ -141,6 +149,8 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		
 		result = GameResult.DEFEAT;
 		
+		update();
+		
 	}
 	
 	@Override
@@ -150,6 +160,8 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 			throw new IllegalStateException(String.format("Tried to draw a GameState that's already %s", result));
 		
 		result = GameResult.DRAW;
+		
+		update();
 		
 	}
 	

@@ -111,4 +111,22 @@ public class GameStateManagerTest {
 		
 	}
 	
+	@Test
+	void updateListenerCalled() {
+		
+		MockUpdateListener listener = new MockUpdateListener();
+		gsm.setUpdateListener(listener);
+		
+		listener.assertNotUpdated();
+		
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Alice", 1, 10, true);
+		
+		listener.assertUpdated();
+		
+		gsm.createGameState(GameType.TIC_TAC_TOE, "Bernd", 2, 200, false);
+		
+		listener.assertUpdated();
+		
+	}
+	
 }

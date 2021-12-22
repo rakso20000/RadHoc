@@ -13,6 +13,8 @@ public abstract class GameStateImpl implements GameState {
 	private final long opponentID;
 	private final long gameID;
 	
+	private UpdateListener updateListener;
+	
 	public static GameState create(GameType gameType, String opponentName, long opponentID, long gameID, boolean playerStarts) {
 		
 		return switch (gameType) {
@@ -49,27 +51,44 @@ public abstract class GameStateImpl implements GameState {
 	
 	@Override
 	public GameType getGameType() {
+		
 		return gameType;
+		
 	}
 	
 	@Override
 	public String getOpponentName() {
+		
 		return opponentName;
+		
 	}
 	
 	@Override
 	public long getOpponentID() {
+		
 		return opponentID;
+		
 	}
 	
 	@Override
 	public long getID() {
+		
 		return gameID;
+		
 	}
 	
 	@Override
 	public void setUpdateListener(UpdateListener listener) {
-		//TODO
+		
+		updateListener = listener;
+		
+	}
+	
+	protected void update() {
+		
+		if (updateListener != null)
+			updateListener.onUpdate();
+		
 	}
 	
 	public void writeState(OutputStream outputStream) throws IOException {

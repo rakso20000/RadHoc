@@ -5,6 +5,7 @@ import radhoc.gamestates.GameState.GameResult;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameStateTicTacToe.Shape;
 import radhoc.gamestates.GameType;
+import radhoc.gamestates.MockUpdateListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -231,6 +232,75 @@ class GameStateTicTacToeImplTest {
 		assertEquals(Shape.CIRCLE, gameStateNew.getShapeAt(2, 0));
 		assertEquals(Shape.NONE, gameStateNew.getShapeAt(2, 1));
 		assertEquals(Shape.CROSS, gameStateNew.getShapeAt(2, 2));
+		
+	}
+	
+	@Test
+	void updateListenerCalled() {
+		
+		GameStateTicTacToe gameStateA = new GameStateTicTacToeImpl("Alice", 1, 100, true);
+		GameStateTicTacToe gameStateB = new GameStateTicTacToeImpl("Bernd", 2, 200, false);
+		GameStateTicTacToe gameStateC = new GameStateTicTacToeImpl("Clara", 3, 300, false);
+		
+		MockUpdateListener listenerA = new MockUpdateListener();
+		MockUpdateListener listenerB = new MockUpdateListener();
+		MockUpdateListener listenerC = new MockUpdateListener();
+		
+		gameStateA.setUpdateListener(listenerA);
+		gameStateB.setUpdateListener(listenerB);
+		gameStateC.setUpdateListener(listenerC);
+		
+		listenerA.assertNotUpdated();
+		listenerB.assertNotUpdated();
+		listenerC.assertNotUpdated();
+		
+		gameStateA.setShapeAt(1, 1, Shape.CROSS);
+		gameStateB.setShapeAt(0, 2, Shape.CIRCLE);
+		gameStateC.setShapeAt(1, 0, Shape.CIRCLE);
+		
+		listenerA.assertUpdated();
+		listenerB.assertUpdated();
+		listenerC.assertUpdated();
+		
+		gameStateA.playerTurnDone();
+		gameStateB.opponentTurnDone();
+		gameStateC.opponentTurnDone();
+		
+		listenerA.assertUpdated();
+		listenerB.assertUpdated();
+		listenerC.assertUpdated();
+		
+		assertThrows(IllegalStateException.class, gameStateA::playerTurnDone);
+		assertThrows(IllegalStateException.class, gameStateB::opponentTurnDone);
+		assertThrows(IllegalStateException.class, gameStateC::opponentTurnDone);
+		
+		assertThrows(IllegalArgumentException.class, () -> gameStateA.setShapeAt(-1, 0, Shape.CIRCLE));
+		assertThrows(IllegalArgumentException.class, () -> gameStateB.setShapeAt(1, 3, Shape.CROSS));
+		assertThrows(IllegalArgumentException.class, () -> gameStateC.setShapeAt(2, -2, Shape.CIRCLE));
+		
+		listenerA.assertNotUpdated();
+		listenerB.assertNotUpdated();
+		listenerC.assertNotUpdated();
+		
+		gameStateA.win();
+		gameStateB.lose();
+		gameStateC.draw();
+		
+		listenerA.assertUpdated();
+		listenerB.assertUpdated();
+		listenerC.assertUpdated();
+		
+		assertThrows(IllegalStateException.class, gameStateA::draw);
+		assertThrows(IllegalStateException.class, gameStateB::lose);
+		assertThrows(IllegalStateException.class, gameStateC::win);
+		
+		assertThrows(IllegalStateException.class, () -> gameStateA.setShapeAt(2, 0, Shape.CIRCLE));
+		assertThrows(IllegalStateException.class, () -> gameStateB.setShapeAt(1, 1, Shape.CROSS));
+		assertThrows(IllegalStateException.class, () -> gameStateC.setShapeAt(0, 1, Shape.CROSS));
+		
+		listenerA.assertNotUpdated();
+		listenerB.assertNotUpdated();
+		listenerC.assertNotUpdated();
 		
 	}
 	
