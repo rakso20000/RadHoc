@@ -1,6 +1,7 @@
 package radhoc.communication;
 
 import net.sharksystem.SharkException;
+import net.sharksystem.SharkPeer;
 import net.sharksystem.SharkTestPeerFS;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CommunicationTest {
+	
+	private Path directory;
 	
 	private SharkTestPeerFS alicePeer;
 	private SharkTestPeerFS berndPeer;
@@ -30,9 +36,7 @@ public class CommunicationTest {
 	private MockInviteListener inviteListenerC;
 	
 	@BeforeEach
-	void setUp() throws IOException, SharkException {
-		
-		Path directory;
+	void setUp() throws IOException, SharkException, ExecutionException, InterruptedException {
 		
 		directory = Files.createTempDirectory("radhoctests");
 		
@@ -40,9 +44,17 @@ public class CommunicationTest {
 		berndPeer = new SharkTestPeerFS("bernd", directory + File.separator + "bernd");
 		claraPeer = new SharkTestPeerFS("clara", directory + File.separator + "clara");
 		
-		communicationA = CommunicationFactory.createCommunication(1, "Alice", alicePeer);
-		communicationB = CommunicationFactory.createCommunication(2, "Bernd", berndPeer);
-		communicationC = CommunicationFactory.createCommunication(3, "Clara", claraPeer);
+		var communicationAFuture = CommunicationFactory.createCommunication(1, "Alice", alicePeer);
+		var communicationBFuture = CommunicationFactory.createCommunication(2, "Bernd", berndPeer);
+		var communicationCFuture = CommunicationFactory.createCommunication(3, "Clara", claraPeer);
+		
+		alicePeer.start();
+		berndPeer.start();
+		claraPeer.start();
+		
+		communicationA = communicationAFuture.get();
+		communicationB = communicationBFuture.get();
+		communicationC = communicationCFuture.get();
 		
 		moveListenerA = new MockMoveListener();
 		moveListenerB = new MockMoveListener();
@@ -60,10 +72,6 @@ public class CommunicationTest {
 		communicationB.setInviteListener(inviteListenerB);
 		communicationC.setInviteListener(inviteListenerC);
 		
-		alicePeer.start();
-		berndPeer.start();
-		claraPeer.start();
-		
 	}
 	
 	private void encounter(int n) throws SharkException, IOException, InterruptedException {
@@ -79,6 +87,16 @@ public class CommunicationTest {
 		alicePeer.getASAPTestPeerFS().startEncounter(4002 + n * 3, berndPeer.getASAPTestPeerFS());
 		Thread.sleep(200);
 		alicePeer.getASAPTestPeerFS().stopEncounter(berndPeer.getASAPTestPeerFS());
+		
+	}
+	
+	@Test
+	void uninitializedCommunication() throws SharkException {
+		
+		SharkPeer dieterPeer = new SharkTestPeerFS("dieter", directory + File.separator + "dieter");
+		var communicationDFuture = CommunicationFactory.createCommunication(4, "Dieter", dieterPeer);
+		
+		assertFalse(communicationDFuture.isDone());
 		
 	}
 	

@@ -10,6 +10,7 @@ import radhoc.gamestates.GameType;
 import java.io.*;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class CommunicationImpl implements Communication, ASAPMessageReceivedListener {
 	
@@ -20,16 +21,18 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	
 	private final long userID;
 	private final String username;
+	private final CompletableFuture<Communication> communicationFuture;
 	
 	private MoveListener moveListener;
 	private InviteListener inviteListener;
 	
 	private ASAPPeer asapPeer;
 	
-	public CommunicationImpl(long userID, String username) {
+	public CommunicationImpl(long userID, String username, CompletableFuture<Communication> communicationFuture) {
 		
 		this.userID = userID;
 		this.username = username;
+		this.communicationFuture = communicationFuture;
 		
 	}
 	
@@ -39,6 +42,8 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		this.asapPeer = asapPeer;
 		
 		asapPeer.addASAPMessageReceivedListener(ASAP_FORMAT, this);
+		
+		communicationFuture.complete(this);
 		
 	}
 	
