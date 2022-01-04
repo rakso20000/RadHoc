@@ -2,13 +2,6 @@ package radhoc.gamestates;
 
 public interface GameState {
 	
-	public static enum GameResult {
-		STILL_PLAYING,
-		DRAW,
-		VICTORY,
-		DEFEAT;
-	}
-	
 	/**
 	 * Returns the GameType of this game
 	 * @return GameType

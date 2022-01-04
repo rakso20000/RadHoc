@@ -15,8 +15,9 @@ public interface GameStateManager {
 	 * @param opponentName
 	 * @param opponentID
 	 * @param gameID
+	 * @param playerStarts if true, this player has the first turn of the game (only applicable to some GameTypes)
 	 */
-	void createGameState(GameType gameType, String opponentName, int opponentID, int gameID);
+	void createGameState(GameType gameType, String opponentName, int opponentID, int gameID, boolean playerStarts);
 	
 	/**
 	 * Sets the UpdateListener for this GameState.

@@ -8,37 +8,33 @@ import java.io.*;
 
 public abstract class GameStateImpl implements GameState {
 	
-	protected final GameType gameType;
-	protected final String opponentName;
-	protected final long opponentID;
-	protected final long gameID;
+	private final GameType gameType;
+	private final String opponentName;
+	private final long opponentID;
+	private final long gameID;
 	
-	public static GameState create(GameType gameType, String opponentName, long opponentID, long gameID) {
+	private UpdateListener updateListener;
+	
+	public static GameState create(GameType gameType, String opponentName, long opponentID, long gameID, boolean playerStarts) {
 		
-		switch (gameType) {
-		case TIC_TAC_TOE:
-			return new GameStateTicTacToeImpl(opponentName, opponentID, gameID);
-		default:
-			throw new IllegalArgumentException("GameType not supported");
-		}
+		return switch (gameType) {
+			case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, playerStarts);
+		};
 		
 	}
 	
 	public static GameState fromStream(InputStream inputStream) throws IOException {
 		
-		try (ObjectInputStream ois = new ObjectInputStream(inputStream)) {
+		try (DataInputStream dis = new DataInputStream(inputStream)) {
 			
-			GameType gameType = GameType.fromByte(ois.readByte());
-			String opponentName = ois.readUTF();
-			long opponentID = ois.readLong();
-			long gameID = ois.readLong();
+			GameType gameType = GameType.fromByte(dis.readByte());
+			String opponentName = dis.readUTF();
+			long opponentID = dis.readLong();
+			long gameID = dis.readLong();
 			
-			switch (gameType) {
-			case TIC_TAC_TOE:
-				return GameStateTicTacToeImpl.fromStream(opponentName, opponentID, gameID, inputStream);
-			default:
-				throw new IllegalArgumentException("GameType not supported");
-			}
+			return switch (gameType) {
+				case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, inputStream);
+			};
 			
 		}
 		
@@ -55,47 +51,56 @@ public abstract class GameStateImpl implements GameState {
 	
 	@Override
 	public GameType getGameType() {
+		
 		return gameType;
+		
 	}
 	
 	@Override
 	public String getOpponentName() {
+		
 		return opponentName;
+		
 	}
 	
 	@Override
 	public long getOpponentID() {
+		
 		return opponentID;
+		
 	}
 	
 	@Override
 	public long getID() {
+		
 		return gameID;
-	}
-	
-	@Override
-	public GameResult getGameResult() {
-		return null; //TODO
-	}
-	
-	@Override
-	public boolean isPlayable() {
-		return false; //TODO
+		
 	}
 	
 	@Override
 	public void setUpdateListener(UpdateListener listener) {
-		//TODO
+		
+		updateListener = listener;
+		
+	}
+	
+	protected void update() {
+		
+		if (updateListener != null)
+			updateListener.onUpdate();
+		
 	}
 	
 	public void writeState(OutputStream outputStream) throws IOException {
 		
-		try (ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
+		try (DataOutputStream dos = new DataOutputStream(outputStream)) {
 			
-			oos.writeByte(gameType.toByte());
-			oos.writeUTF(opponentName);
-			oos.writeLong(opponentID);
-			oos.writeLong(gameID);
+			dos.writeByte(gameType.toByte());
+			dos.writeUTF(opponentName);
+			dos.writeLong(opponentID);
+			dos.writeLong(gameID);
+			
+			dos.flush();
 			
 			writeSpecifics(outputStream);
 			

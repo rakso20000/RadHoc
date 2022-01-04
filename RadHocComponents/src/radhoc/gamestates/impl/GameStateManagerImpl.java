@@ -8,6 +8,7 @@ import radhoc.gamestates.UpdateListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class GameStateManagerImpl implements GameStateManager {
@@ -16,11 +17,13 @@ public class GameStateManagerImpl implements GameStateManager {
 	
 	private final List<GameState> gameStates = new ArrayList<>();
 	
+	private UpdateListener updateListener;
+	
 	public GameStateManagerImpl(File directory) {
 		
 		this.directory = directory;
 		
-		for (File file : directory.listFiles()) {
+		for (File file : Objects.requireNonNull(directory.listFiles())) {
 			
 			try {
 				
@@ -31,6 +34,9 @@ public class GameStateManagerImpl implements GameStateManager {
 				}
 				
 			} catch (IOException ex) {
+				
+				System.err.println("Failed to load GameState from file " + file.getName());
+				ex.printStackTrace();
 				
 				//noinspection ResultOfMethodCallIgnored
 				file.delete();
@@ -49,23 +55,29 @@ public class GameStateManagerImpl implements GameStateManager {
 	}
 	
 	@Override
-	public void createGameState(GameType gameType, String opponentName, int opponentID, int gameID) {
+	public void createGameState(GameType gameType, String opponentName, int opponentID, int gameID, boolean playerStarts) {
 		
-		GameState gs = GameStateImpl.create(gameType, opponentName, opponentID, gameID);
+		GameState gs = GameStateImpl.create(gameType, opponentName, opponentID, gameID, playerStarts);
 		
 		gameStates.add(gs);
-	
+		
+		update();
+		
 	}
 	
 	@Override
 	public void setUpdateListener(UpdateListener listener) {
-		//TODO
+		
+		updateListener = listener;
+		
 	}
 	
 	@Override
 	public GameState getGameState(long gameID) {
 		
-		Optional<GameState> gameState = gameStates.stream().filter(gs -> gs.getID() == gameID).findAny();
+		Optional<GameState> gameState = gameStates.stream()
+			.filter(gs -> gs.getID() == gameID)
+			.findAny();
 		
 		if (gameState.isEmpty())
 			throw new IllegalArgumentException("gameID not found: " + gameID);
@@ -95,6 +107,13 @@ public class GameStateManagerImpl implements GameStateManager {
 			}
 			
 		}
+		
+	}
+	
+	private void update() {
+		
+		if (updateListener != null)
+			updateListener.onUpdate();
 		
 	}
 	
