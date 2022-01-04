@@ -1,6 +1,5 @@
 package radhoc.communication.impl;
 
-import net.sharksystem.SharkException;
 import net.sharksystem.asap.*;
 import radhoc.communication.Communication;
 import radhoc.communication.InviteListener;
@@ -8,7 +7,7 @@ import radhoc.communication.MoveListener;
 import radhoc.gamestates.GameType;
 
 import java.io.*;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -27,6 +26,9 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	private InviteListener inviteListener;
 	
 	private ASAPPeer asapPeer;
+	
+	private boolean listenersAvailable = false;
+	private final List<Message> unreadMessages = new ArrayList<>();
 	
 	public CommunicationImpl(long userID, String username, CompletableFuture<Communication> communicationFuture) {
 		
@@ -47,10 +49,26 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		
 	}
 	
+	private synchronized void checkListeners() {
+		
+		if (moveListener != null && inviteListener != null)
+			synchronized (unreadMessages) {
+				
+				listenersAvailable = true;
+				
+				for (Message message : unreadMessages)
+					handleMessage(message);
+				
+			}
+		
+	}
+	
 	@Override
 	public void setMoveListener(MoveListener listener) {
 		
 		moveListener = listener;
+		
+		checkListeners();
 		
 	}
 	
@@ -58,6 +76,8 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	public void setInviteListener(InviteListener listener) {
 		
 		inviteListener = listener;
+		
+		checkListeners();
 		
 	}
 	
@@ -167,6 +187,8 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		
 	}
 	
+	private record Message(DataInputStreamConsumer consumer, byte[] bytes) {}
+	
 	private interface DataInputStreamConsumer {
 		
 		void accept(DataInputStream dis) throws IOException;
@@ -174,13 +196,13 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	}
 	
 	@Override
-	public void asapMessagesReceived(ASAPMessages asapMessages, String s, List<ASAPHop> list) throws IOException {
+	public void asapMessagesReceived(ASAPMessages messages, String s, List<ASAPHop> list) throws IOException {
 		
-		if (!asapMessages.getFormat().equals(ASAP_FORMAT))
+		if (!messages.getFormat().equals(ASAP_FORMAT))
 			return;
 		
-		DataInputStreamConsumer consumer = switch (asapMessages.getURI().toString()) {
-			case MOVE_URI -> this::onMoveMessages;
+		DataInputStreamConsumer consumer = switch (messages.getURI().toString()) {
+			case MOVE_URI -> this::onMove;
 			case GLOBAL_INVITE_URI -> this::onGlobalInvite;
 			case INVITE_URI -> this::onInvite;
 			case ACCEPT_INVITE_URI -> this::onInviteAccepted;
@@ -189,35 +211,48 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		
 		if (consumer == null) {
 			
-			System.err.printf("Unknown URI: %s%n", asapMessages.getURI());
+			System.err.printf("Unknown URI: %s%n", messages.getURI().toString());
 			return;
 			
 		}
 		
-		Iterator<byte[]> iter = asapMessages.getMessages();
-		
-		while (iter.hasNext()) {
-			
-			byte[] bytes = iter.next();
-			
-			try (
-				ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-				DataInputStream dis = new DataInputStream(bais)
-			) {
+		if (!listenersAvailable)
+			synchronized (unreadMessages) {
 				
-				consumer.accept(dis);
-				
-			} catch (IOException e) {
-				
-				//malformed message, can be ignored
+				if (!listenersAvailable) {
+					
+					for (var iter = messages.getMessages(); iter.hasNext();)
+						unreadMessages.add(new Message(consumer, iter.next()));
+					
+					return;
+					
+				}
 				
 			}
+		
+		for (var iter = messages.getMessages(); iter.hasNext();)
+			handleMessage(new Message(consumer, iter.next()));
+		
+	}
+	
+	private void handleMessage(Message message) {
+		
+		try (
+			ByteArrayInputStream bais = new ByteArrayInputStream(message.bytes);
+			DataInputStream dis = new DataInputStream(bais)
+		) {
+			
+			message.consumer.accept(dis);
+			
+		} catch (IOException e) {
+			
+			System.err.printf("Received malformed message: %s%n", e.getMessage());
 			
 		}
 		
 	}
 	
-	private void onMoveMessages(DataInputStream dis) throws IOException {
+	private void onMove(DataInputStream dis) throws IOException {
 		
 		long recipientID = dis.readLong();
 		

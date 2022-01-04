@@ -60,13 +60,17 @@ public class CommunicationTest {
 		moveListenerB = new MockMoveListener();
 		moveListenerC = new MockMoveListener();
 		
-		communicationA.setMoveListener(moveListenerA);
-		communicationB.setMoveListener(moveListenerB);
-		communicationC.setMoveListener(moveListenerC);
-		
 		inviteListenerA = new MockInviteListener();
 		inviteListenerB = new MockInviteListener();
 		inviteListenerC = new MockInviteListener();
+		
+	}
+	
+	private void setListeners() {
+		
+		communicationA.setMoveListener(moveListenerA);
+		communicationB.setMoveListener(moveListenerB);
+		communicationC.setMoveListener(moveListenerC);
 		
 		communicationA.setInviteListener(inviteListenerA);
 		communicationB.setInviteListener(inviteListenerB);
@@ -103,6 +107,8 @@ public class CommunicationTest {
 	@Test
 	void sendMove() throws SharkException, IOException, InterruptedException {
 		
+		setListeners();
+		
 		byte[] moveData = new byte[] {
 			15, 17, 26, 19, 123, 13, -12, -36, 15
 		};
@@ -121,6 +127,8 @@ public class CommunicationTest {
 	
 	@Test
 	void sendGlobalInvite() throws SharkException, IOException, InterruptedException {
+		
+		setListeners();
 		
 		inviteListenerB.assertNotInvited();
 		inviteListenerC.assertNotInvited();
@@ -141,6 +149,8 @@ public class CommunicationTest {
 	@Test
 	void sendInvite() throws SharkException, IOException, InterruptedException {
 		
+		setListeners();
+		
 		inviteListenerC.assertNotInvited();
 		
 		communicationB.sendInvite("clARA", GameType.TIC_TAC_TOE);
@@ -159,6 +169,8 @@ public class CommunicationTest {
 	@Test
 	void acceptInvite() throws SharkException, IOException, InterruptedException {
 		
+		setListeners();
+		
 		inviteListenerA.assertNotAccepted();
 		
 		communicationC.acceptInvite(1, 16, GameType.TIC_TAC_TOE);
@@ -171,6 +183,40 @@ public class CommunicationTest {
 		inviteListenerA.assertAccepted("Clara", 3, 16, GameType.TIC_TAC_TOE);
 		inviteListenerB.assertNotAccepted();
 		inviteListenerC.assertNotAccepted();
+		
+	}
+	
+	@Test
+	void setListenersAfterReceive() throws SharkException, IOException, InterruptedException {
+		
+		byte[] moveData = new byte[] {
+			1, 2, 3, 5, 8, 13, 21, 34, 45, 79
+		};
+		
+		communicationA.acceptInvite(3, 15, GameType.TIC_TAC_TOE);
+		communicationB.sendInvite(GameType.TIC_TAC_TOE);
+		communicationC.sendInvite("BERND", GameType.TIC_TAC_TOE); //TODO use different GameTypes
+		communicationC.sendMove(1, 10, moveData);
+		
+		encounter(4);
+		
+		inviteListenerA.assertNotInvited();
+		inviteListenerB.assertNotInvited();
+		inviteListenerC.assertNotInvited();
+		inviteListenerC.assertNotAccepted();
+		moveListenerA.assertNotCalled();
+		
+		setListeners();
+		
+		inviteListenerA.assertInvited("Bernd", 2, GameType.TIC_TAC_TOE);
+		inviteListenerB.assertInvited("Clara", 3, GameType.TIC_TAC_TOE);
+		inviteListenerC.assertInvited("Bernd", 2, GameType.TIC_TAC_TOE);
+		inviteListenerA.assertNotAccepted();
+		inviteListenerB.assertNotAccepted();
+		inviteListenerC.assertAccepted("Alice", 1, 15, GameType.TIC_TAC_TOE);
+		moveListenerA.assertCalled(10, moveData);
+		moveListenerB.assertNotCalled();
+		moveListenerC.assertNotCalled();
 		
 	}
 	
