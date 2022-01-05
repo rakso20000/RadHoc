@@ -10,6 +10,7 @@ import radhoc.gamestates.GameType;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -130,6 +131,42 @@ class InvitationManagerTest {
 		assertEquals("Petra", gameState.getOpponentName());
 		assertEquals(27, gameState.getOpponentID());
 		assertEquals(GameType.TIC_TAC_TOE, gameState.getGameType());
+		
+	}
+	
+	@Test
+	void randomizedGameID() {
+		
+		final int NUMBER_INVITATIONS = 1000;
+		
+		for (int i = 0; i < NUMBER_INVITATIONS; ++i)
+			mockCommunication.mockReceiveInvite(String.format("Person %d", i), i, GameType.TIC_TAC_TOE);
+		
+		List<Invitation> invitations = invitationManager.getInvitations();
+		List<Long> gameIDs = new ArrayList<>(NUMBER_INVITATIONS);
+		
+		for (int i = 0; i < NUMBER_INVITATIONS; ++i) {
+			
+			Invitation invitation = invitations.get(i);
+			invitation.accept();
+			
+			mockCommunication.assertAccepted(i, GameType.TIC_TAC_TOE);
+			long gameID = mockCommunication.getAcceptedGameID();
+			
+			GameState gameState = gameStateManager.getGameState(gameID);
+			assertEquals(String.format("Person %d", i), gameState.getOpponentName());
+			assertEquals(i, gameState.getOpponentID());
+			assertEquals(GameType.TIC_TAC_TOE, gameState.getGameType());
+			
+			gameIDs.add(gameID);
+			
+		}
+		
+		long distinctCount = gameIDs.stream()
+			.distinct()
+			.count();
+		
+		assertEquals(NUMBER_INVITATIONS, distinctCount);
 		
 	}
 	

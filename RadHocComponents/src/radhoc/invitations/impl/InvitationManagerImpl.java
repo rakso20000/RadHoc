@@ -9,11 +9,14 @@ import radhoc.invitations.InvitationManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class InvitationManagerImpl implements InvitationManager, InviteListener {
 	
 	private final GameStateManager gameStateManager;
 	private final Communication communication;
+	
+	private final Random random = new Random();
 	
 	private final List<Invitation> invitations = new ArrayList<>();
 	
@@ -50,7 +53,7 @@ public class InvitationManagerImpl implements InvitationManager, InviteListener 
 	@Override
 	public void receiveInvite(String senderName, long senderID, GameType gameType) {
 		
-		invitations.add(new InvitationImpl(this, gameStateManager, communication, senderName, senderID, gameType));
+		invitations.add(new InvitationImpl(this, senderName, senderID, gameType));
 		
 	}
 	
@@ -58,6 +61,16 @@ public class InvitationManagerImpl implements InvitationManager, InviteListener 
 	public void inviteAccepted(String senderName, long senderID, long gameID, GameType gameType) {
 		
 		gameStateManager.createGameState(gameType, senderName, senderID, gameID, false);
+		
+	}
+	
+	public void acceptInvitation(Invitation invitation) {
+		
+		long gameID = random.nextLong();
+		
+		communication.acceptInvite(invitation.getOpponentID(), gameID, invitation.getGameType());
+		
+		gameStateManager.createGameState(invitation.getGameType(), invitation.getOpponentName(), invitation.getOpponentID(), gameID, true);
 		
 	}
 	

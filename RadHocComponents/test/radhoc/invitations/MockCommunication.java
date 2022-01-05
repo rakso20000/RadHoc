@@ -110,6 +110,8 @@ public class MockCommunication implements Communication {
 		
 		assertEquals(gameType, globalInviteGameType);
 		
+		globalInvited = false;
+		
 	}
 	
 	public void assertInvited(String recipientName, GameType gameType) {
@@ -120,6 +122,8 @@ public class MockCommunication implements Communication {
 		assertEquals(recipientName, inviteRecipientName);
 		assertEquals(gameType, inviteGameType);
 		
+		invited = false;
+		
 	}
 	
 	public void assertAccepted(long recipientID, GameType gameType) {
@@ -129,6 +133,8 @@ public class MockCommunication implements Communication {
 		
 		assertEquals(recipientID, acceptRecipientID);
 		assertEquals(gameType, acceptGameType);
+		
+		accepted = false;
 		
 	}
 	
