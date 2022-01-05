@@ -29,7 +29,7 @@ public class InvitationManagerImpl implements InvitationManager, InviteListener 
 	@Override
 	public List<Invitation> getInvitations() {
 		
-		return invitations;
+		return new ArrayList<>(invitations);
 		
 	}
 	

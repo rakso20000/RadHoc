@@ -50,7 +50,7 @@ public class GameStateManagerImpl implements GameStateManager {
 	@Override
 	public List<GameState> getAllGameStates() {
 		
-		return gameStates;
+		return new ArrayList<>(gameStates);
 		
 	}
 	
