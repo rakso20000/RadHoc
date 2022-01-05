@@ -6,16 +6,13 @@ import radhoc.gamestates.GameType;
 import radhoc.gamestates.UpdateListener;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class GameStateManagerImpl implements GameStateManager {
 	
 	private final File directory;
 	
-	private final List<GameState> gameStates = new ArrayList<>();
+	private final Map<Long, GameState> gameStates = new HashMap<>();
 	
 	private UpdateListener updateListener;
 	
@@ -29,7 +26,9 @@ public class GameStateManagerImpl implements GameStateManager {
 				
 				try (FileInputStream fis = new FileInputStream(file)) {
 					
-					gameStates.add(GameStateImpl.fromStream(fis));
+					GameState gameState = GameStateImpl.fromStream(fis);
+					
+					gameStates.put(gameState.getID(), gameState);
 					
 				}
 				
@@ -50,16 +49,16 @@ public class GameStateManagerImpl implements GameStateManager {
 	@Override
 	public List<GameState> getAllGameStates() {
 		
-		return new ArrayList<>(gameStates);
+		return new ArrayList<>(gameStates.values());
 		
 	}
 	
 	@Override
 	public void createGameState(GameType gameType, String opponentName, long opponentID, long gameID, boolean playerStarts) {
 		
-		GameState gs = GameStateImpl.create(gameType, opponentName, opponentID, gameID, playerStarts);
+		GameState gameState = GameStateImpl.create(gameType, opponentName, opponentID, gameID, playerStarts);
 		
-		gameStates.add(gs);
+		gameStates.put(gameState.getID(), gameState);
 		
 		update();
 		
@@ -75,21 +74,19 @@ public class GameStateManagerImpl implements GameStateManager {
 	@Override
 	public GameState getGameState(long gameID) {
 		
-		Optional<GameState> gameState = gameStates.stream()
-			.filter(gs -> gs.getID() == gameID)
-			.findAny();
+		GameState gameState = gameStates.get(gameID);
 		
-		if (gameState.isEmpty())
+		if (gameState == null)
 			throw new IllegalArgumentException("gameID not found: " + gameID);
 		
-		return gameState.get();
+		return gameState;
 		
 	}
 	
 	@Override
 	public void save() {
 		
-		for (GameState gameState : gameStates) {
+		for (GameState gameState : gameStates.values()) {
 			
 			try {
 				

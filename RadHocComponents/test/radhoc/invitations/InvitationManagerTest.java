@@ -137,7 +137,7 @@ class InvitationManagerTest {
 	@Test
 	void randomizedGameID() {
 		
-		final int NUMBER_INVITATIONS = 1000;
+		final int NUMBER_INVITATIONS = 100000;
 		
 		for (int i = 0; i < NUMBER_INVITATIONS; ++i)
 			mockCommunication.mockReceiveInvite(String.format("Person %d", i), i, GameType.TIC_TAC_TOE);
