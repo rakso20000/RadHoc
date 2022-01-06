@@ -164,7 +164,7 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 	}
 	
 	@Override
-	public void acceptInvite(long recipientID, long gameID, GameType gameType) {
+	public void acceptInvite(long recipientID, long gameID, GameType gameType, boolean recipientStart) {
 		
 		try (
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -176,6 +176,7 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 			dos.writeLong(userID);
 			dos.writeLong(gameID);
 			dos.writeByte(gameType.toByte());
+			dos.writeBoolean(recipientStart);
 			
 			sendData(ACCEPT_INVITE_URI, baos.toByteArray());
 			
@@ -304,8 +305,9 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		long senderID = dis.readLong();
 		long gameID = dis.readLong();
 		GameType gameType = GameType.fromByte(dis.readByte());
+		boolean playerStarts = dis.readBoolean();
 		
-		inviteListener.inviteAccepted(senderName, senderID, gameID, gameType);
+		inviteListener.inviteAccepted(senderName, senderID, gameID, gameType, playerStarts);
 		
 	}
 	

@@ -125,12 +125,13 @@ class InvitationManagerTest {
 	@Test
 	void inviteAccepted() {
 		
-		mockCommunication.mockInviteAccepted("Petra", 27, 14, GameType.TIC_TAC_TOE);
+		mockCommunication.mockInviteAccepted("Petra", 27, 14, GameType.TIC_TAC_TOE, true);
 		
 		GameState gameState = gameStateManager.getGameState(14);
 		assertEquals("Petra", gameState.getOpponentName());
 		assertEquals(27, gameState.getOpponentID());
 		assertEquals(GameType.TIC_TAC_TOE, gameState.getGameType());
+		assertTrue(gameState.isPlayable());
 		
 	}
 	
@@ -167,6 +168,38 @@ class InvitationManagerTest {
 			.count();
 		
 		assertEquals(NUMBER_INVITATIONS, distinctCount);
+		
+	}
+	
+	@Test
+	void randomizeStartingPlayer() {
+		
+		boolean playerStarted = false;
+		boolean opponentStarted = false;
+		
+		for (int i = 0;; ++i) {
+			
+			mockCommunication.mockReceiveInvite(String.format("Person %d", i), i, GameType.TIC_TAC_TOE);
+			
+			Invitation invitation = invitationManager.getInvitations().get(i);
+			invitation.accept();
+			
+			mockCommunication.assertAccepted(i, GameType.TIC_TAC_TOE);
+			boolean recipientStarts = mockCommunication.isAcceptRecipientStarting();
+			
+			GameState gameState = gameStateManager.getGameState(mockCommunication.getAcceptedGameID());
+			assertTrue(recipientStarts != gameState.isPlayable());
+			
+			//Make sure both players get to start at some point
+			if (recipientStarts)
+				opponentStarted = true;
+			else
+				playerStarted = true;
+			
+			if (playerStarted && opponentStarted)
+				break;
+			
+		}
 		
 	}
 	

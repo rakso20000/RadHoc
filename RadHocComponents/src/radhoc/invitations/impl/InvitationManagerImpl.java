@@ -58,19 +58,20 @@ public class InvitationManagerImpl implements InvitationManager, InviteListener 
 	}
 	
 	@Override
-	public void inviteAccepted(String senderName, long senderID, long gameID, GameType gameType) {
+	public void inviteAccepted(String senderName, long senderID, long gameID, GameType gameType, boolean playerStarts) {
 		
-		gameStateManager.createGameState(gameType, senderName, senderID, gameID, false);
+		gameStateManager.createGameState(gameType, senderName, senderID, gameID, playerStarts);
 		
 	}
 	
 	public void acceptInvitation(Invitation invitation) {
 		
 		long gameID = random.nextLong();
+		boolean playerStarts = random.nextBoolean();
 		
-		communication.acceptInvite(invitation.getOpponentID(), gameID, invitation.getGameType());
+		communication.acceptInvite(invitation.getOpponentID(), gameID, invitation.getGameType(), !playerStarts);
 		
-		gameStateManager.createGameState(invitation.getGameType(), invitation.getOpponentName(), invitation.getOpponentID(), gameID, true);
+		gameStateManager.createGameState(invitation.getGameType(), invitation.getOpponentName(), invitation.getOpponentID(), gameID, playerStarts);
 		
 	}
 	

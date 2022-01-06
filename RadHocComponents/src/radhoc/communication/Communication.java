@@ -43,8 +43,9 @@ public interface Communication extends SharkComponent {
 	 * @param recipientID ID of the recipient
 	 * @param gameID ID for the game, chosen by this device
 	 * @param gameType GameType of the new game
+	 * @param recipientStarts if true, the recipient has the first turn of the game (only applicable to some GameTypes)
 	 */
-	void acceptInvite(long recipientID, long gameID, GameType gameType);
+	void acceptInvite(long recipientID, long gameID, GameType gameType, boolean recipientStarts);
 	
 	/**
 	 * Sets an InviteListener to receive all open invitations
