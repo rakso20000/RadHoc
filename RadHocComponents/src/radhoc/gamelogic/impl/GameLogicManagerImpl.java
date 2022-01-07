@@ -1,8 +1,10 @@
 package radhoc.gamelogic.impl;
 
+import radhoc.communication.Communication;
 import radhoc.gamelogic.GameLogic;
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamestates.GameState;
+import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameType;
 
 import java.nio.file.Path;
@@ -13,7 +15,7 @@ public class GameLogicManagerImpl implements GameLogicManager {
 
 	private Map<GameState, GameLogic> gameLogics;
 
-    public GameLogicManagerImpl(Path directory) {
+    public GameLogicManagerImpl() {
          gameLogics = new HashMap<>();
     }
 
@@ -29,7 +31,7 @@ public class GameLogicManagerImpl implements GameLogicManager {
 		switch (gt) {
 			//TODO different GameTypes
 		case TIC_TAC_TOE:
-			gl = new GameLogicTicTacToeImpl(state);
+			gl = new GameLogicTicTacToeImpl(null, (GameStateTicTacToe) state); //TODO pass communication
 			gameLogics.put(state, gl);
 			return gl;
 		default:
@@ -37,4 +39,5 @@ public class GameLogicManagerImpl implements GameLogicManager {
 		}
 		
 	}
+
 }

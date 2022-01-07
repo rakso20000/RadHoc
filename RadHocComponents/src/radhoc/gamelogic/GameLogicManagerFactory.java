@@ -6,9 +6,9 @@ import java.nio.file.Path;
 
 public class GameLogicManagerFactory {
 
-	public static GameLogicManager createGameLogicManager(Path directory) {
+	public static GameLogicManager createGameLogicManager() {
 
-		return new GameLogicManagerImpl(directory);
+		return new GameLogicManagerImpl();
 
 	}
 
