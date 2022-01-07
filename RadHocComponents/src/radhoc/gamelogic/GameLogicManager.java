@@ -1,5 +1,6 @@
 package radhoc.gamelogic;
 
+import radhoc.communication.Communication;
 import radhoc.gamestates.GameState;
 
 public interface GameLogicManager {
