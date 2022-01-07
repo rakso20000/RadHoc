@@ -187,11 +187,21 @@ public class CommunicationImpl implements Communication, ASAPMessageReceivedList
 		
 	}
 	
-	private record Message(DataInputStreamConsumer consumer, byte[] bytes) {}
-	
 	private interface DataInputStreamConsumer {
 		
 		void accept(DataInputStream dis) throws IOException;
+		
+	}
+	
+	private static class Message {
+		
+		public final DataInputStreamConsumer consumer;
+		public final byte[] bytes;
+		
+		public Message(DataInputStreamConsumer consumer, byte[] bytes) {
+			this.consumer = consumer;
+			this.bytes = bytes;
+		}
 		
 	}
 	
