@@ -1,5 +1,6 @@
-package radhoc.communication;
+package radhoc.mock;
 
+import radhoc.communication.InviteListener;
 import radhoc.gamestates.GameType;
 
 import static org.junit.jupiter.api.Assertions.*;

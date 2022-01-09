@@ -30,7 +30,7 @@ public interface GameState {
 	 * Returns the outcome of this game or STILL_PLAYING if the game is still ongoing
 	 * @return GameResult
 	 */
-	GameResult getGameResult();
+	GameResult getResult();
 	
 	/**
 	 * Returns whether this device's user can currently play in this game,

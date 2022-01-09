@@ -6,6 +6,8 @@ import net.sharksystem.SharkTestPeerFS;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import radhoc.gamestates.GameType;
+import radhoc.mock.MockInviteListener;
+import radhoc.mock.MockMoveListener;
 
 import java.io.File;
 import java.io.IOException;

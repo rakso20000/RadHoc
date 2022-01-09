@@ -1,4 +1,6 @@
-package radhoc.communication;
+package radhoc.mock;
+
+import radhoc.communication.MoveListener;
 
 import static org.junit.jupiter.api.Assertions.*;
 

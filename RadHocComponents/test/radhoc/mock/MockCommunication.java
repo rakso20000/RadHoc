@@ -1,4 +1,4 @@
-package radhoc.invitations;
+package radhoc.mock;
 
 import net.sharksystem.SharkException;
 import net.sharksystem.asap.ASAPPeer;
@@ -11,8 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MockCommunication implements Communication {
 	
+	private MoveListener moveListener;
 	private InviteListener inviteListener;
 	
+	private boolean didMove = false;
+	private boolean didMoveTwice = false;
 	private boolean globalInvited = false;
 	private boolean globalInvitedTwice = false;
 	private boolean invited = false;
@@ -20,12 +23,28 @@ public class MockCommunication implements Communication {
 	private boolean accepted = false;
 	private boolean acceptedTwice = false;
 	
+	private long moveRecipientID;
+	private long moveGameID;
+	private byte[] moveMessage;
 	private GameType globalInviteGameType;
 	private String inviteRecipientName;
 	private GameType inviteGameType;
 	private long acceptRecipientID;
 	private long acceptGameID;
 	private GameType acceptGameType;
+	
+	@Override
+	public void sendMove(long recipientID, long gameID, byte[] message) {
+		
+		if (didMove)
+			didMoveTwice = true;
+		
+		moveRecipientID = recipientID;
+		moveGameID = gameID;
+		moveMessage = message;
+		
+		didMove = true;
+	}
 	
 	@Override
 	public void sendInvite(GameType gameType) {
@@ -67,9 +86,22 @@ public class MockCommunication implements Communication {
 	}
 	
 	@Override
+	public void setMoveListener(MoveListener listener) {
+		
+		moveListener = listener;
+		
+	}
+	
+	@Override
 	public void setInviteListener(InviteListener listener) {
 		
 		inviteListener = listener;
+		
+	}
+	
+	public void mockMove(long gameID, byte[] message) {
+		
+		moveListener.onMove(gameID, message);
 		
 	}
 	
@@ -82,6 +114,12 @@ public class MockCommunication implements Communication {
 	public void mockInviteAccepted(String senderName, long senderID, long gameID, GameType gameType) {
 		
 		inviteListener.inviteAccepted(senderName, senderID, gameID, gameType);
+		
+	}
+	
+	public void assertNotMoved() {
+		
+		assertFalse(didMove);
 		
 	}
 	
@@ -100,6 +138,19 @@ public class MockCommunication implements Communication {
 	public void assertNotAccepted() {
 		
 		assertFalse(accepted);
+		
+	}
+	
+	public void assertMoved(long recipientID, long gameID, byte[] message) {
+		
+		assertTrue(didMove);
+		assertFalse(didMoveTwice);
+		
+		assertEquals(recipientID, moveRecipientID);
+		assertEquals(gameID, moveGameID);
+		assertArrayEquals(message, moveMessage);
+		
+		didMove = false;
 		
 	}
 	
@@ -144,20 +195,8 @@ public class MockCommunication implements Communication {
 		
 	}
 	
-	//Not used in Invitations
-	
 	@Override
 	public void onStart(ASAPPeer asapPeer) {
-		
-	}
-	
-	@Override
-	public void sendMove(long recipientID, long gameID, byte[] message) {
-		
-	}
-	
-	@Override
-	public void setMoveListener(MoveListener listener) {
 		
 	}
 	

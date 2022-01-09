@@ -6,6 +6,7 @@ import radhoc.gamestates.GameState;
 import radhoc.gamestates.GameStateManager;
 import radhoc.gamestates.GameStateManagerFactory;
 import radhoc.gamestates.GameType;
+import radhoc.mock.MockCommunication;
 
 import java.io.File;
 import java.io.IOException;

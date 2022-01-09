@@ -5,7 +5,7 @@ import radhoc.gamestates.GameResult;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameStateTicTacToe.Shape;
 import radhoc.gamestates.GameType;
-import radhoc.gamestates.MockUpdateListener;
+import radhoc.mock.MockUpdateListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,7 +25,7 @@ class GameStateTicTacToeImplTest {
 		assertEquals("Clara", gameStateC.getOpponentName());
 		assertEquals(3, gameStateC.getOpponentID());
 		assertEquals(5, gameStateC.getID());
-		assertEquals(GameResult.STILL_PLAYING, gameStateC.getGameResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateC.getResult());
 		assertTrue(gameStateC.isPlayable());
 		assertEquals(Shape.CROSS, gameStateC.getPlayerShape());
 		
@@ -33,7 +33,7 @@ class GameStateTicTacToeImplTest {
 		assertEquals("Dieter", gameStateD.getOpponentName());
 		assertEquals(4, gameStateD.getOpponentID());
 		assertEquals(10, gameStateD.getID());
-		assertEquals(GameResult.STILL_PLAYING, gameStateD.getGameResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateD.getResult());
 		assertFalse(gameStateD.isPlayable());
 		assertEquals(Shape.CIRCLE, gameStateD.getPlayerShape());
 		
@@ -46,9 +46,9 @@ class GameStateTicTacToeImplTest {
 		GameStateTicTacToe gameStateB = new GameStateTicTacToeImpl("Bernd", 2, 3, true);
 		GameStateTicTacToe gameStateC = new GameStateTicTacToeImpl("Clara", 3, 4, false);
 		
-		assertEquals(GameResult.STILL_PLAYING, gameStateA.getGameResult());
-		assertEquals(GameResult.STILL_PLAYING, gameStateB.getGameResult());
-		assertEquals(GameResult.STILL_PLAYING, gameStateC.getGameResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateA.getResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateB.getResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateC.getResult());
 		
 		assertTrue(gameStateA.isPlayable());
 		assertTrue(gameStateB.isPlayable());
@@ -58,9 +58,9 @@ class GameStateTicTacToeImplTest {
 		gameStateB.lose();
 		gameStateC.draw();
 		
-		assertEquals(GameResult.VICTORY, gameStateA.getGameResult());
-		assertEquals(GameResult.DEFEAT, gameStateB.getGameResult());
-		assertEquals(GameResult.DRAW, gameStateC.getGameResult());
+		assertEquals(GameResult.VICTORY, gameStateA.getResult());
+		assertEquals(GameResult.DEFEAT, gameStateB.getResult());
+		assertEquals(GameResult.DRAW, gameStateC.getResult());
 		
 		assertFalse(gameStateA.isPlayable());
 		assertFalse(gameStateB.isPlayable());
@@ -236,10 +236,10 @@ class GameStateTicTacToeImplTest {
 		assertEquals(Shape.CIRCLE, gameStateNewC.getPlayerShape());
 		assertEquals(Shape.CIRCLE, gameStateNewD.getPlayerShape());
 		
-		assertEquals(GameResult.STILL_PLAYING, gameStateNewA.getGameResult());
-		assertEquals(GameResult.STILL_PLAYING, gameStateNewB.getGameResult());
-		assertEquals(GameResult.STILL_PLAYING, gameStateNewC.getGameResult());
-		assertEquals(GameResult.STILL_PLAYING, gameStateNewD.getGameResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewA.getResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewB.getResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewC.getResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewD.getResult());
 		
 		assertTrue(gameStateNewA.isPlayable());
 		assertFalse(gameStateNewB.isPlayable());
@@ -260,10 +260,10 @@ class GameStateTicTacToeImplTest {
 		assertEquals(Shape.CIRCLE, gameStateNewC.getPlayerShape());
 		assertEquals(Shape.CIRCLE, gameStateNewD.getPlayerShape());
 		
-		assertEquals(GameResult.STILL_PLAYING, gameStateNewA.getGameResult());
-		assertEquals(GameResult.VICTORY, gameStateNewB.getGameResult());
-		assertEquals(GameResult.DEFEAT, gameStateNewC.getGameResult());
-		assertEquals(GameResult.DRAW, gameStateNewD.getGameResult());
+		assertEquals(GameResult.STILL_PLAYING, gameStateNewA.getResult());
+		assertEquals(GameResult.VICTORY, gameStateNewB.getResult());
+		assertEquals(GameResult.DEFEAT, gameStateNewC.getResult());
+		assertEquals(GameResult.DRAW, gameStateNewD.getResult());
 		
 		assertTrue(gameStateNewA.isPlayable());
 		assertFalse(gameStateNewB.isPlayable());

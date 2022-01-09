@@ -100,7 +100,7 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 	}
 	
 	@Override
-	public GameResult getGameResult() {
+	public GameResult getResult() {
 		
 		return result;
 		

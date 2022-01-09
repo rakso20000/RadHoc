@@ -1,17 +1,15 @@
-package radhoc.gamestates;
+package radhoc.mock;
+
+import radhoc.gamestates.UpdateListener;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MockUpdateListener implements UpdateListener {
 	
 	private boolean updated;
-	private boolean updatedTwice;
 	
 	@Override
 	public void onUpdate() {
-		
-		if (updated)
-			updatedTwice = true;
 		
 		updated = true;
 		
@@ -25,8 +23,9 @@ public class MockUpdateListener implements UpdateListener {
 	
 	public void assertUpdated() {
 		
+		//For now, UpdateListener is allowed to be called twice
+		
 		assertTrue(updated);
-		assertFalse(updatedTwice);
 		
 		updated = false;
 		
