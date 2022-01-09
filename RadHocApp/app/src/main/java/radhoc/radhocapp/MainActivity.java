@@ -6,6 +6,8 @@ import android.os.Bundle;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 
@@ -15,6 +17,7 @@ import java.util.Objects;
 
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamestates.GameStateManager;
+import radhoc.gamestates.GameType;
 import radhoc.radhocapp.databinding.ActivityMainBinding;
 
 public class MainActivity extends ASAPActivity {
@@ -37,8 +40,21 @@ public class MainActivity extends ASAPActivity {
 		
 		Toolbar toolbar = binding.toolbar;
 		setSupportActionBar(toolbar);
-		CollapsingToolbarLayout toolBarLayout = binding.toolbarLayout;
-		toolBarLayout.setTitle(getTitle());
+		
+		//TODO remove sample data
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Clara", 5, 10, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Lara", 6, 11, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Sara", 7, 12, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Hans", 8, 13, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Peter", 9, 14, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Dieter", 10, 15, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Georg", 11, 16, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Franz", 12, 17, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Marie", 13, 18, true);
+		
+		RecyclerView recyclerView = findViewById(R.id.gamestate_recycler);
+		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+		recyclerView.setAdapter(new GameStateRecyclerAdapter(gameStateManager.getAllGameStates()));
 		
 	}
 	
