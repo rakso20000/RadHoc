@@ -13,6 +13,16 @@
 		android:theme="@style/Theme.RadHocApp"
 		tools:replace="android:theme">
 		<activity
+			android:name=".InviteActivity"
+			android:exported="false"
+			android:label="@string/title_activity_invite"
+			android:theme="@style/Theme.RadHocApp.NoActionBar" />
+		<activity
+			android:name=".InvitationsActivity"
+			android:exported="false"
+			android:label="@string/title_activity_invitation"
+			android:theme="@style/Theme.RadHocApp.NoActionBar" />
+		<activity
 			android:name=".MainActivity"
 			android:exported="false"
 			android:label="@string/title_activity_main"

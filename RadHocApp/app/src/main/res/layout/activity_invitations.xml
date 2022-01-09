@@ -5,7 +5,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:fitsSystemWindows="true"
-	tools:context=".MainActivity">
+	tools:context=".InvitationsActivity">
 	
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/app_bar"
@@ -29,21 +29,28 @@
 				android:layout_height="?attr/actionBarSize"
 				android:layout_width="match_parent"
 				app:layout_collapseMode="pin"
-				app:popupTheme="@style/Theme.RadHocApp.PopupOverlay" />
-		
+				app:popupTheme="@style/Theme.RadHocApp.PopupOverlay">
+				
+				<ImageButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:srcCompat="?attr/homeAsUpIndicator"
+					android:id="@+id/backButton"
+					android:onClick="onBack"
+					android:minHeight="48dp" />
+				
+				<Button
+					android:text="Send Invitation"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/button"
+					android:onClick="onCreateInvitation" />
+				
+			</androidx.appcompat.widget.Toolbar>
+			
 		</com.google.android.material.appbar.CollapsingToolbarLayout>
 	</com.google.android.material.appbar.AppBarLayout>
 	
 	<include layout="@layout/content_scrolling" />
-	
-	<com.google.android.material.floatingactionbutton.FloatingActionButton
-		android:id="@+id/fab"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginEnd="@dimen/fab_margin"
-		app:layout_anchor="@id/app_bar"
-		app:layout_anchorGravity="bottom|end"
-		app:srcCompat="@android:drawable/ic_dialog_email"
-		android:onClick="onViewInvitations" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
