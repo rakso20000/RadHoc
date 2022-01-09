@@ -1,5 +1,6 @@
 package radhoc.radhocapp;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,13 @@ import radhoc.gamestates.GameState;
 
 public class GameStateRecyclerAdapter extends RecyclerView.Adapter<GameStateRecyclerAdapter.ViewHolder> {
 	
+	private final Activity activity;
+	
 	private final List<GameState> gameStates;
 	
-	public GameStateRecyclerAdapter(List<GameState> gameStates) {
+	public GameStateRecyclerAdapter(Activity activity, List<GameState> gameStates) {
 		
+		this.activity = activity;
 		this.gameStates = gameStates;
 		
 	}
@@ -55,7 +59,7 @@ public class GameStateRecyclerAdapter extends RecyclerView.Adapter<GameStateRecy
 		
 		GameState gameState = gameStates.get(position);
 		
-		holder.playButton.setOnClickListener(new GameStateClickListener(gameState));
+		holder.playButton.setOnClickListener(new GameStateClickListener(activity, gameState));
 		holder.gameTypeText.setText(gameState.getGameType().toString());
 		holder.opponentNameText.setText(gameState.getOpponentName());
 		

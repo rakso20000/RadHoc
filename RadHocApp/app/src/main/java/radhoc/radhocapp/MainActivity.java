@@ -54,7 +54,7 @@ public class MainActivity extends ASAPActivity {
 		
 		RecyclerView recyclerView = findViewById(R.id.gamestate_recycler);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-		recyclerView.setAdapter(new GameStateRecyclerAdapter(gameStateManager.getAllGameStates()));
+		recyclerView.setAdapter(new GameStateRecyclerAdapter(this, gameStateManager.getAllGameStates()));
 		
 	}
 	
