@@ -2,10 +2,7 @@ package radhoc.invitations;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import radhoc.gamestates.GameState;
-import radhoc.gamestates.GameStateManager;
-import radhoc.gamestates.GameStateManagerFactory;
-import radhoc.gamestates.GameType;
+import radhoc.gamestates.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -252,6 +249,28 @@ class InvitationManagerTest {
 		assertEquals("Dieter", invitationD.getOpponentName());
 		assertEquals(4, invitationD.getOpponentID());
 		assertEquals(GameType.TIC_TAC_TOE, invitationD.getGameType());
+		
+	}
+	
+	@Test
+	void updateListenerCalled() {
+		
+		MockUpdateListener listener = new MockUpdateListener();
+		invitationManager.setUpdateListener(listener);
+		
+		listener.assertNotUpdated();
+		
+		mockCommunication.mockReceiveInvite("Hans", 10, GameType.TIC_TAC_TOE);
+		listener.assertUpdated();
+		
+		mockCommunication.mockReceiveInvite("Lara", 12, GameType.TIC_TAC_TOE);
+		listener.assertUpdated();
+		
+		invitationManager.getInvitations().get(0).accept();
+		listener.assertUpdated();
+		
+		invitationManager.getInvitations().get(0).decline();
+		listener.assertUpdated();
 		
 	}
 	

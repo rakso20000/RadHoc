@@ -5,6 +5,7 @@ import radhoc.communication.InviteListener;
 import radhoc.gamestates.GameState;
 import radhoc.gamestates.GameStateManager;
 import radhoc.gamestates.GameType;
+import radhoc.gamestates.UpdateListener;
 import radhoc.gamestates.impl.GameStateImpl;
 import radhoc.invitations.Invitation;
 import radhoc.invitations.InvitationManager;
@@ -23,6 +24,8 @@ public class InvitationManagerImpl implements InvitationManager, InviteListener 
 	private final Random random = new Random();
 	
 	private final List<Invitation> invitations = new ArrayList<>();
+	
+	private UpdateListener updateListener;
 	
 	public InvitationManagerImpl(GameStateManager gameStateManager, Communication communication, File invitationsFile) {
 		
@@ -90,6 +93,8 @@ public class InvitationManagerImpl implements InvitationManager, InviteListener 
 		
 		invitations.add(new InvitationImpl(this, senderName, senderID, gameType));
 		
+		update();
+		
 	}
 	
 	@Override
@@ -110,11 +115,29 @@ public class InvitationManagerImpl implements InvitationManager, InviteListener 
 		
 		invitations.remove(invitation);
 		
+		update();
+		
 	}
 	
 	public void removeInvitation(Invitation invitation) {
 		
 		invitations.remove(invitation);
+		
+		update();
+		
+	}
+	
+	@Override
+	public void setUpdateListener(UpdateListener listener) {
+		
+		updateListener = listener;
+		
+	}
+	
+	private void update() {
+		
+		if (updateListener != null)
+			updateListener.onUpdate();
 		
 	}
 	

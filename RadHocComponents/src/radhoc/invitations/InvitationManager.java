@@ -2,6 +2,7 @@ package radhoc.invitations;
 
 import java.util.List;
 import radhoc.gamestates.GameType;
+import radhoc.gamestates.UpdateListener;
 
 public interface InvitationManager {
 	
@@ -23,6 +24,12 @@ public interface InvitationManager {
 	 * @param gameType
 	 */
 	void sendInvite(String name, GameType gameType);
+	
+	/**
+	 * Sets an UpdateListener that is notified whenever the list of Invitations changes
+	 * @param listener
+	 */
+	void setUpdateListener(UpdateListener listener);
 	
 	/**
 	 * Persistently saves all current Invitations
