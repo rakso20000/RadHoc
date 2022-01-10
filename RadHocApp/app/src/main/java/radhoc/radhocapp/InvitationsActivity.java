@@ -9,6 +9,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 
@@ -35,8 +37,10 @@ public class InvitationsActivity extends ASAPActivity {
 		
 		Toolbar toolbar = binding.toolbar;
 		setSupportActionBar(toolbar);
-		CollapsingToolbarLayout toolBarLayout = binding.toolbarLayout;
-		toolBarLayout.setTitle(getTitle());
+		
+		RecyclerView recyclerView = findViewById(R.id.invitations_recycler);
+		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+		recyclerView.setAdapter(new InvitationsRecyclerAdapter(invitationManager.getInvitations()));
 		
 	}
 	

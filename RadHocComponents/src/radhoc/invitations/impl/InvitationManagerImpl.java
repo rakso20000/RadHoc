@@ -72,6 +72,8 @@ public class InvitationManagerImpl implements InvitationManager, InviteListener 
 		
 		gameStateManager.createGameState(invitation.getGameType(), invitation.getOpponentName(), invitation.getOpponentID(), gameID, true);
 		
+		invitations.remove(invitation);
+		
 	}
 	
 	public void removeInvitation(Invitation invitation) {

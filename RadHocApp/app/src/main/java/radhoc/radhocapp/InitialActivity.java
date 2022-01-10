@@ -215,8 +215,13 @@ public class InitialActivity extends AppCompatActivity {
 		
 		RadHocApp app = (RadHocApp) getApplication(); 
 		
-		app.setGameStateManager(GameStateManagerFactory.createGameStateManager(gameStatesFolder));
-		app.setGameLogicManager(GameLogicManagerFactory.createGameLogicManager());
+		app.setGameStateManager(GameStateManagerFactory.createGameStateManager(
+			gameStatesFolder
+		));
+		app.setGameLogicManager(GameLogicManagerFactory.createGameLogicManager(
+			app.getGameStateManager(),
+			communicationFuture.get()
+		));
 		app.setInvitationManager(InvitationManagerFactory.createInvitationManager(
 			app.getGameStateManager(),
 			communicationFuture.get()

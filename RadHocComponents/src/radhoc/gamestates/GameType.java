@@ -21,4 +21,12 @@ public enum GameType {
 		
 	}
 	
+	@Override
+	public String toString() {
+		
+		return switch (this) {
+			case TIC_TAC_TOE -> "TicTacToe";
+		};
+		
+	}
 }
