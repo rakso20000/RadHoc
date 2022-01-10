@@ -295,13 +295,13 @@ class GameStateTicTacToeImplTest {
 	@Test
 	void updateListenerCalled() {
 		
-		GameStateTicTacToe gameStateA = new GameStateTicTacToeImpl("Alice", 1, 100, true);
-		GameStateTicTacToe gameStateB = new GameStateTicTacToeImpl("Bernd", 2, 200, false);
-		GameStateTicTacToe gameStateC = new GameStateTicTacToeImpl("Clara", 3, 300, false);
-		
 		MockUpdateListener listenerA = new MockUpdateListener();
 		MockUpdateListener listenerB = new MockUpdateListener();
 		MockUpdateListener listenerC = new MockUpdateListener();
+		
+		GameStateTicTacToe gameStateA = new GameStateTicTacToeImpl("Alice", 1, 100, true);
+		GameStateTicTacToe gameStateB = new GameStateTicTacToeImpl("Bernd", 2, 200, false);
+		GameStateTicTacToe gameStateC = new GameStateTicTacToeImpl("Clara", 3, 300, false);
 		
 		gameStateA.setUpdateListener(listenerA);
 		gameStateB.setUpdateListener(listenerB);

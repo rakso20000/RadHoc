@@ -61,7 +61,7 @@ public class GameStateManagerImpl implements GameStateManager {
 		gameStates.put(gameState.getID(), gameState);
 		
 		update();
-
+		
 		return gameState;
 		
 	}
