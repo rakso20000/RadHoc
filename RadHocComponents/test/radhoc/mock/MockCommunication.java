@@ -32,6 +32,7 @@ public class MockCommunication implements Communication {
 	private long acceptRecipientID;
 	private long acceptGameID;
 	private GameType acceptGameType;
+	private boolean acceptPlayerStarts = false;
 	
 	@Override
 	public void sendMove(long recipientID, long gameID, byte[] message) {
@@ -72,7 +73,7 @@ public class MockCommunication implements Communication {
 	}
 	
 	@Override
-	public void acceptInvite(long recipientID, long gameID, GameType gameType) {
+	public void acceptInvite(long recipientID, long gameID, GameType gameType, boolean recipientStart) {
 		
 		if (accepted)
 			acceptedTwice = true;
@@ -80,6 +81,7 @@ public class MockCommunication implements Communication {
 		acceptRecipientID = recipientID;
 		acceptGameID = gameID;
 		acceptGameType = gameType;
+		acceptPlayerStarts = recipientStart;
 		
 		accepted = true;
 		
@@ -111,9 +113,9 @@ public class MockCommunication implements Communication {
 		
 	}
 	
-	public void mockInviteAccepted(String senderName, long senderID, long gameID, GameType gameType) {
+	public void mockInviteAccepted(String senderName, long senderID, long gameID, GameType gameType, boolean playerStarts) {
 		
-		inviteListener.inviteAccepted(senderName, senderID, gameID, gameType);
+		inviteListener.inviteAccepted(senderName, senderID, gameID, gameType, playerStarts);
 		
 	}
 	
@@ -192,6 +194,12 @@ public class MockCommunication implements Communication {
 	public long getAcceptedGameID() {
 		
 		return acceptGameID;
+		
+	}
+	
+	public boolean isAcceptRecipientStarting() {
+		
+		return acceptPlayerStarts;
 		
 	}
 	

@@ -175,14 +175,14 @@ public class CommunicationTest {
 		
 		inviteListenerA.assertNotAccepted();
 		
-		communicationC.acceptInvite(1, 16, GameType.TIC_TAC_TOE);
+		communicationC.acceptInvite(1, 16, GameType.TIC_TAC_TOE, true);
 		
 		encounter(3);
 		
 		inviteListenerA.assertNotInvited();
 		inviteListenerB.assertNotInvited();
 		inviteListenerC.assertNotInvited();
-		inviteListenerA.assertAccepted("Clara", 3, 16, GameType.TIC_TAC_TOE);
+		inviteListenerA.assertAccepted("Clara", 3, 16, GameType.TIC_TAC_TOE, true);
 		inviteListenerB.assertNotAccepted();
 		inviteListenerC.assertNotAccepted();
 		
@@ -195,7 +195,7 @@ public class CommunicationTest {
 			1, 2, 3, 5, 8, 13, 21, 34, 45, 79
 		};
 		
-		communicationA.acceptInvite(3, 15, GameType.TIC_TAC_TOE);
+		communicationA.acceptInvite(3, 15, GameType.TIC_TAC_TOE, false);
 		communicationB.sendInvite(GameType.TIC_TAC_TOE);
 		communicationC.sendInvite("BERND", GameType.TIC_TAC_TOE); //TODO use different GameTypes
 		communicationC.sendMove(1, 10, moveData);
@@ -215,7 +215,7 @@ public class CommunicationTest {
 		inviteListenerC.assertInvited("Bernd", 2, GameType.TIC_TAC_TOE);
 		inviteListenerA.assertNotAccepted();
 		inviteListenerB.assertNotAccepted();
-		inviteListenerC.assertAccepted("Alice", 1, 15, GameType.TIC_TAC_TOE);
+		inviteListenerC.assertAccepted("Alice", 1, 15, GameType.TIC_TAC_TOE, false);
 		moveListenerA.assertCalled(10, moveData);
 		moveListenerB.assertNotCalled();
 		moveListenerC.assertNotCalled();

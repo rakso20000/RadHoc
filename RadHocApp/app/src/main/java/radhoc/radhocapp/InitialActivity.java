@@ -226,8 +226,13 @@ public class InitialActivity extends AppCompatActivity {
 		
 		File appRootDir = getFilesDir();
 		File gameStatesFolder = new File(appRootDir, "gamestates");
+		File invitationsFile = new File(appRootDir, "invitations");
+		
 		if (!gameStatesFolder.isDirectory() && !gameStatesFolder.mkdirs())
 			throw new IOException("Could not create necessary directories");
+		
+		if (invitationsFile.isDirectory())
+			throw new IOException("invitations is a directory");
 		
 		System.out.println("Username: " + username.get());
 		
@@ -240,7 +245,8 @@ public class InitialActivity extends AppCompatActivity {
 		));
 		app.setInvitationManager(InvitationManagerFactory.createInvitationManager(
 			app.getGameStateManager(),
-			communicationFuture.get()
+			communicationFuture.get(),
+			invitationsFile
 		));
 		
 		app.setInitialized();

@@ -19,7 +19,8 @@ public interface InviteListener {
 	 * @param senderID ID of the user who accepted the invitation
 	 * @param gameID ID chosen for the newly commencing game
 	 * @param gameType GameType of the newly commencing game
+	 * @param playerStarts if true, this player has the first turn of the game (only applicable to some GameTypes)
 	 */
-	void inviteAccepted(String senderName, long senderID, long gameID, GameType gameType);
+	void inviteAccepted(String senderName, long senderID, long gameID, GameType gameType, boolean playerStarts);
 	
 }

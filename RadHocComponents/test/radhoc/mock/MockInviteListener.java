@@ -20,6 +20,7 @@ public class MockInviteListener implements InviteListener {
 	private long acceptSenderID;
 	private long acceptGameID;
 	private GameType acceptGameType;
+	private boolean acceptPlayerStarts;
 	
 	@Override
 	public void receiveInvite(String senderName, long senderID, GameType gameType) {
@@ -36,7 +37,7 @@ public class MockInviteListener implements InviteListener {
 	}
 	
 	@Override
-	public void inviteAccepted(String senderName, long senderID, long gameID, GameType gameType) {
+	public void inviteAccepted(String senderName, long senderID, long gameID, GameType gameType, boolean playerStarts) {
 		
 		if (accepted)
 			acceptedTwice = true;
@@ -45,6 +46,7 @@ public class MockInviteListener implements InviteListener {
 		acceptSenderID = senderID;
 		acceptGameID = gameID;
 		acceptGameType = gameType;
+		acceptPlayerStarts = playerStarts;
 		
 		accepted = true;
 		
@@ -73,7 +75,7 @@ public class MockInviteListener implements InviteListener {
 		
 	}
 	
-	public void assertAccepted(String senderName, long senderID, long gameID, GameType gameType) {
+	public void assertAccepted(String senderName, long senderID, long gameID, GameType gameType, boolean playerStarts) {
 		
 		assertTrue(accepted);
 		assertFalse(acceptedTwice);
@@ -82,6 +84,7 @@ public class MockInviteListener implements InviteListener {
 		assertEquals(senderID, acceptSenderID);
 		assertEquals(gameID, acceptGameID);
 		assertEquals(gameType, acceptGameType);
+		assertEquals(playerStarts, acceptPlayerStarts);
 		
 	}
 	
