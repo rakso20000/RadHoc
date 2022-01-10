@@ -46,6 +46,8 @@ public class InitialActivity extends AppCompatActivity {
 	private static final String USERNAME = "RadHoc_Username";
 	private static final String ASAP_FOLDER_NAME = "RadHoc_ASAPData";
 	
+	private RadHocApp app;
+	
 	private Optional<String> sharkOwnerID;
 	private Optional<Long> userID;
 	private Optional<String> username;
@@ -59,6 +61,15 @@ public class InitialActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		app = (RadHocApp) getApplication();
+		
+		if (app.isInitialized()) {
+			
+			done();
+			return;
+			
+		}
 		
 		boolean preferencesReady = preparePreferences();
 		
@@ -88,6 +99,8 @@ public class InitialActivity extends AppCompatActivity {
 			startSharkPeer();
 			createComponents();
 			
+			done();
+			
 		} catch (SharkException | IOException | InterruptedException | ExecutionException e) {
 			
 			Log.e("RadHoc InitialActivity", "Fatal error trying to initialize RadHoc: " + e.getMessage());
@@ -96,12 +109,17 @@ public class InitialActivity extends AppCompatActivity {
 			
 		}
 		
+	}
+	
+	private void done() {
+		
 		finish();
 		
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 		
 	}
+	
 	
 	private void readPreferences() {
 		
@@ -213,8 +231,6 @@ public class InitialActivity extends AppCompatActivity {
 		
 		System.out.println("Username: " + username.get());
 		
-		RadHocApp app = (RadHocApp) getApplication(); 
-		
 		app.setGameStateManager(GameStateManagerFactory.createGameStateManager(
 			gameStatesFolder
 		));
@@ -226,6 +242,8 @@ public class InitialActivity extends AppCompatActivity {
 			app.getGameStateManager(),
 			communicationFuture.get()
 		));
+		
+		app.setInitialized();
 		
 	}
 	

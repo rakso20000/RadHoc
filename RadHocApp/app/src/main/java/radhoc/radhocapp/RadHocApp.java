@@ -12,6 +12,7 @@ public class RadHocApp extends Application {
 	private GameStateManager gameStateManager;
 	private GameLogicManager gameLogicManager;
 	private InvitationManager invitationManager;
+	private boolean initialized;
 	
 	public GameStateManager getGameStateManager() {
 		return gameStateManager;
@@ -35,6 +36,14 @@ public class RadHocApp extends Application {
 	
 	public void setInvitationManager(InvitationManager invitationManager) {
 		this.invitationManager = invitationManager;
+	}
+	
+	public boolean isInitialized() {
+		return initialized;
+	}
+	
+	public void setInitialized() {
+		initialized = true;
 	}
 	
 }
