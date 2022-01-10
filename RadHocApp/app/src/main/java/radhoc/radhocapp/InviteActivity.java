@@ -35,7 +35,8 @@ public class InviteActivity extends ASAPActivity {
 		binding = ActivityInviteBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 		
-		setSupportActionBar(binding.toolbar);
+		binding.titleBar.titleText.setText("Send Invite");
+		binding.titleBar.nextButton.setVisibility(View.GONE);
 		
 	}
 	

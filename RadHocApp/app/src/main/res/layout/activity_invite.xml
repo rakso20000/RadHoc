@@ -1,64 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".InviteActivity">
+	tools:context=".InviteActivity"
+	android:id="@+id/coordinatorLayout">
 	
-	<com.google.android.material.appbar.AppBarLayout
+	<include
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_width="match_parent"
-		android:theme="@style/Theme.RadHocApp.AppBarOverlay">
-		
-		<androidx.appcompat.widget.Toolbar
-			android:id="@+id/toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="?attr/actionBarSize"
-			android:background="?attr/colorPrimary"
-			app:popupTheme="@style/Theme.RadHocApp.PopupOverlay">
-			
-			<ImageButton
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				app:srcCompat="?attr/homeAsUpIndicator"
-				android:id="@+id/imageButton"
-				android:onClick="onBack"
-				android:minHeight="48dp" />
-			
-		</androidx.appcompat.widget.Toolbar>
-		
-		<LinearLayout
-			android:orientation="vertical"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:background="#FFFFFF">
-			
-			<TextView
-				android:text="Who would you like to invite? (Leave blank to invite everyone):"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:id="@+id/textView2"
-				android:textSize="16sp"
-				android:textColor="#000000" />
-			
-			<EditText
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:inputType="textPersonName"
-				android:ems="10"
-				android:id="@+id/inviteOpponentNameText"
-				android:textColor="#000000"
-				android:hint="Inviting everyone" />
-			
-			<Button
-				android:text="Send Invitation"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/sendInvitationButton"
-				android:onClick="onSendInvitation" />
-		</LinearLayout>
+		layout="@layout/title_bar"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		android:id="@+id/title_bar" />
 	
-	</com.google.android.material.appbar.AppBarLayout>
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:background="#FFFFFF"
+		android:id="@+id/linearLayout"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/title_bar"
+		android:padding="14dp">
+		
+		<TextView
+			android:text="Who would you like to invite? (Leave blank to invite everyone):"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/textView2"
+			android:textSize="16sp"
+			android:textColor="#000000" />
+		
+		<EditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:inputType="textPersonName"
+			android:ems="10"
+			android:id="@+id/inviteOpponentNameText"
+			android:textColor="#000000"
+			android:hint="Inviting everyone"
+			android:minHeight="48dp" />
+		
+		<Button
+			android:text="Send Invitation"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/sendInvitationButton"
+			android:onClick="onSendInvitation" />
+	</LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

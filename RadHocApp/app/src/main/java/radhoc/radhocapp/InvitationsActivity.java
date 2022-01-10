@@ -35,8 +35,8 @@ public class InvitationsActivity extends ASAPActivity {
 		binding = ActivityInvitationsBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 		
-		Toolbar toolbar = binding.toolbar;
-		setSupportActionBar(toolbar);
+		binding.titleBar.titleText.setText("Invitations");
+		binding.titleBar.nextButton.setText("Send Invite");
 		
 		RecyclerView recyclerView = findViewById(R.id.invitations_recycler);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -50,7 +50,7 @@ public class InvitationsActivity extends ASAPActivity {
 		
 	}
 	
-	public void onCreateInvitation(View view) {
+	public void onNext(View view) {
 		
 		Intent intent = new Intent(this, InviteActivity.class);
 		startActivity(intent);

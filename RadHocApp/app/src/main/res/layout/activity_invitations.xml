@@ -7,42 +7,19 @@
 	android:fitsSystemWindows="true"
 	tools:context=".InvitationsActivity">
 	
-	<androidx.appcompat.widget.Toolbar
-		android:id="@+id/toolbar"
-		android:layout_height="56dp"
-		android:layout_width="match_parent"
-		app:layout_collapseMode="pin"
-		app:popupTheme="@style/Theme.RadHocApp.PopupOverlay"
+	<include
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		layout="@layout/title_bar"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		android:background="@color/purple_500">
-		
-		<ImageButton
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			app:srcCompat="?attr/homeAsUpIndicator"
-			android:id="@+id/backButton"
-			android:onClick="onBack"
-			android:minHeight="48dp" />
-		
-		<Button
-			android:text="Send Invitation"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/button"
-			android:onClick="onCreateInvitation"
-			tools:layout_editor_absoluteY="4dp"
-			tools:layout_editor_absoluteX="64dp"
-			android:layout_gravity="right" />
-	
-	</androidx.appcompat.widget.Toolbar>
+		app:layout_constraintStart_toStartOf="parent"
+		android:id="@+id/title_bar" />
 	
 	<androidx.recyclerview.widget.RecyclerView
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:id="@+id/invitations_recycler"
-		app:layout_constraintTop_toBottomOf="@+id/toolbar"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />

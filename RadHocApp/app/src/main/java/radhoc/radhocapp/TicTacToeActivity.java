@@ -40,7 +40,8 @@ public class TicTacToeActivity extends ASAPActivity implements UpdateListener {
 		binding = ActivityTicTacToeBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 		
-		setSupportActionBar(binding.toolbar);
+		binding.titleBar.titleText.setText("TicTacToe - " + gameState.getOpponentName());
+		binding.titleBar.nextButton.setVisibility(View.GONE);
 		
 		gameState.setUpdateListener(this);
 		

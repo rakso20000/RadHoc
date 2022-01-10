@@ -32,6 +32,7 @@ public class GameStateRecyclerAdapter extends RecyclerView.Adapter<GameStateRecy
 		private final Button playButton;
 		private final TextView gameTypeText;
 		private final TextView opponentNameText;
+		private final TextView statusText;
 		
 		public ViewHolder(@NonNull View view) {
 			super(view);
@@ -39,6 +40,7 @@ public class GameStateRecyclerAdapter extends RecyclerView.Adapter<GameStateRecy
 			playButton = view.findViewById(R.id.gamestate_play_button);
 			gameTypeText = view.findViewById(R.id.gamestate_gametype);
 			opponentNameText = view.findViewById(R.id.gamestate_opponentname);
+			statusText = view.findViewById(R.id.status_text);
 			
 		}
 		
@@ -59,9 +61,18 @@ public class GameStateRecyclerAdapter extends RecyclerView.Adapter<GameStateRecy
 		
 		GameState gameState = gameStates.get(position);
 		
+		String statusText = gameState.isPlayable() ? "Your Turn" : switch (gameState.getResult()) {
+			case STILL_PLAYING -> "Enemy Turn";
+			case VICTORY -> "Victory";
+			case DEFEAT -> "DEFEAT";
+			case DRAW -> "DRAW";
+		};
+		
 		holder.playButton.setOnClickListener(new GameStateClickListener(activity, gameState));
+		holder.playButton.setText(gameState.isPlayable() ? "Play" : "View");
 		holder.gameTypeText.setText(gameState.getGameType().toString());
-		holder.opponentNameText.setText(gameState.getOpponentName());
+		holder.opponentNameText.setText("vs " + gameState.getOpponentName());
+		holder.statusText.setText(statusText);
 		
 	}
 	

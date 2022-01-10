@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamestates.GameStateManager;
+import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameType;
 import radhoc.radhocapp.databinding.ActivityMainBinding;
 
@@ -38,8 +39,9 @@ public class MainActivity extends ASAPActivity {
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 		
-		Toolbar toolbar = binding.toolbar;
-		setSupportActionBar(toolbar);
+		binding.titleBar.titleText.setText("RadHoc");
+		binding.titleBar.backButton.setVisibility(View.GONE);
+		binding.titleBar.nextButton.setText("Invitations");
 		
 		//TODO remove sample data
 		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Clara", 5, 10, true);
@@ -52,13 +54,18 @@ public class MainActivity extends ASAPActivity {
 		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Franz", 12, 17, true);
 		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Marie", 13, 18, true);
 		
+		((GameStateTicTacToe) gameStateManager.getGameState(11)).playerTurnDone();
+		((GameStateTicTacToe) gameStateManager.getGameState(12)).win();
+		((GameStateTicTacToe) gameStateManager.getGameState(13)).lose();
+		((GameStateTicTacToe) gameStateManager.getGameState(14)).draw();
+		
 		RecyclerView recyclerView = findViewById(R.id.gamestate_recycler);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 		recyclerView.setAdapter(new GameStateRecyclerAdapter(this, gameStateManager.getAllGameStates()));
 		
 	}
 	
-	public void onViewInvitations(View view) {
+	public void onNext(View view) {
 		
 		Intent intent = new Intent(this, InvitationsActivity.class);
 		startActivity(intent);
