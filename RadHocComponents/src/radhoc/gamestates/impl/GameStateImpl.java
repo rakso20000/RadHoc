@@ -19,6 +19,7 @@ public abstract class GameStateImpl implements GameState {
 		
 		return switch (gameType) {
 			case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, playerStarts);
+			case ROCK_PAPER_SCISSORS -> new GameStateRockPaperScissorsImpl(opponentName, opponentID, gameID);
 		};
 		
 	}
@@ -34,6 +35,7 @@ public abstract class GameStateImpl implements GameState {
 			
 			return switch (gameType) {
 				case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, inputStream);
+				case ROCK_PAPER_SCISSORS -> new GameStateRockPaperScissorsImpl(opponentName, opponentID, gameID, inputStream);
 			};
 			
 		}

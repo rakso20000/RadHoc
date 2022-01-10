@@ -4,10 +4,7 @@ import radhoc.communication.Communication;
 import radhoc.communication.MoveListener;
 import radhoc.gamelogic.GameLogic;
 import radhoc.gamelogic.GameLogicManager;
-import radhoc.gamestates.GameState;
-import radhoc.gamestates.GameStateManager;
-import radhoc.gamestates.GameStateTicTacToe;
-import radhoc.gamestates.GameType;
+import radhoc.gamestates.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -45,6 +42,7 @@ public class GameLogicManagerImpl implements GameLogicManager, MoveListener {
 		
 		gameLogic = switch (state.getGameType()) {
 			case TIC_TAC_TOE -> new GameLogicTicTacToeImpl(communication, (GameStateTicTacToe) state);
+			case ROCK_PAPER_SCISSORS -> new GameLogicRockPaperScissorsImpl(communication, (GameStateRockPaperScissors) state);
 		};
 		
 		gameLogics.put(state, gameLogic);

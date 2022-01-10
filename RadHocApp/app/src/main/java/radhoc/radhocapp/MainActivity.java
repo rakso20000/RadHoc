@@ -50,9 +50,9 @@ public class MainActivity extends ASAPActivity {
 		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Hans", 8, 13, true);
 		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Peter", 9, 14, true);
 		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Dieter", 10, 15, true);
-		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Georg", 11, 16, true);
-		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Franz", 12, 17, true);
-		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Marie", 13, 18, true);
+		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Georg", 11, 16, true);
+		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Franz", 12, 17, true);
+		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Marie", 13, 18, true);
 		
 		((GameStateTicTacToe) gameStateManager.getGameState(11)).playerTurnDone();
 		((GameStateTicTacToe) gameStateManager.getGameState(12)).win();

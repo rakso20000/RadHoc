@@ -14,21 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GameStateManagerTest {
 	
 	private File directory;
-	private GameStateManager gsm;
+	private GameStateManager gameStateManager;
 	
 	@BeforeEach
 	void setUp() throws IOException {
 		
 		directory = Files.createTempDirectory("radhoctests").toFile();
 		
-		gsm = GameStateManagerFactory.createGameStateManager(directory);
+		gameStateManager = GameStateManagerFactory.createGameStateManager(directory);
 		
 	}
 	
 	@Test
 	void getEmptyGameStates() {
 		
-		List<GameState> gameStates = gsm.getAllGameStates();
+		List<GameState> gameStates = gameStateManager.getAllGameStates();
 		assertTrue(gameStates.isEmpty());
 		
 	}
@@ -36,77 +36,84 @@ public class GameStateManagerTest {
 	@Test
 	void createGameState() {
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Dieter", 420, 1337, true);
+		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Dieter", 420, 1337, true);
 		
-		List<GameState> gameStates = gsm.getAllGameStates();
+		List<GameState> gameStates = gameStateManager.getAllGameStates();
 		assertEquals(1, gameStates.size());
 		
-		GameState gs = gameStates.get(0);
-		assertEquals(GameType.TIC_TAC_TOE, gs.getGameType());
-		assertEquals("Dieter", gs.getOpponentName());
-		assertEquals(420, gs.getOpponentID());
-		assertEquals(1337, gs.getID());
+		GameState gameState = gameStates.get(0);
+		assertEquals(GameType.ROCK_PAPER_SCISSORS, gameState.getGameType());
+		assertEquals("Dieter", gameState.getOpponentName());
+		assertEquals(420, gameState.getOpponentID());
+		assertEquals(1337, gameState.getID());
 		
 	}
 	
 	@Test
 	void findGameState() {
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Lara", 3, 5, true);
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Hans", 7, 8, false);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Lara", 3, 5, true);
+		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Hans", 7, 8, false);
 		
-		GameState gsLara = gsm.getGameState(5);
-		assertEquals("Lara", gsLara.getOpponentName());
-		assertEquals(3, gsLara.getOpponentID());
-		assertEquals(5, gsLara.getID());
+		GameState gameStateLara = gameStateManager.getGameState(5);
+		assertEquals(GameType.TIC_TAC_TOE, gameStateLara.getGameType());
+		assertEquals("Lara", gameStateLara.getOpponentName());
+		assertEquals(3, gameStateLara.getOpponentID());
+		assertEquals(5, gameStateLara.getID());
 		
-		GameState gsHans = gsm.getGameState(8);
-		assertEquals("Hans", gsHans.getOpponentName());
-		assertEquals(7, gsHans.getOpponentID());
-		assertEquals(8, gsHans.getID());
+		GameState gameStateHans = gameStateManager.getGameState(8);
+		assertEquals(GameType.ROCK_PAPER_SCISSORS, gameStateHans.getGameType());
+		assertEquals("Hans", gameStateHans.getOpponentName());
+		assertEquals(7, gameStateHans.getOpponentID());
+		assertEquals(8, gameStateHans.getID());
 		
-		assertThrows(IllegalArgumentException.class, () -> gsm.getGameState(126));
+		assertThrows(IllegalArgumentException.class, () -> gameStateManager.getGameState(126));
 		
 	}
 	
 	@Test
 	void saveGameStates() {
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Sara", 1, 2, true);
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Peter", 3, 4, false);
+		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Sara", 1, 2, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Peter", 3, 4, false);
 		
-		gsm.save();
-		gsm = GameStateManagerFactory.createGameStateManager(directory);
+		gameStateManager.save();
+		gameStateManager = GameStateManagerFactory.createGameStateManager(directory);
 		
-		GameState gsSara = gsm.getGameState(2);
-		assertEquals("Sara", gsSara.getOpponentName());
-		assertEquals(1, gsSara.getOpponentID());
-		assertEquals(2, gsSara.getID());
+		GameState gameStateSara = gameStateManager.getGameState(2);
+		assertEquals(GameType.ROCK_PAPER_SCISSORS, gameStateSara.getGameType());
+		assertEquals("Sara", gameStateSara.getOpponentName());
+		assertEquals(1, gameStateSara.getOpponentID());
+		assertEquals(2, gameStateSara.getID());
 		
-		GameState gsPeter = gsm.getGameState(4);
-		assertEquals("Peter", gsPeter.getOpponentName());
-		assertEquals(3, gsPeter.getOpponentID());
-		assertEquals(4, gsPeter.getID());
+		GameState gameStatePeter = gameStateManager.getGameState(4);
+		assertEquals(GameType.TIC_TAC_TOE, gameStatePeter.getGameType());
+		assertEquals("Peter", gameStatePeter.getOpponentName());
+		assertEquals(3, gameStatePeter.getOpponentID());
+		assertEquals(4, gameStatePeter.getID());
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Clara", 5, 6, false);
+		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Clara", 5, 6, false);
 		
-		gsm.save();
-		gsm = GameStateManagerFactory.createGameStateManager(directory);
+		gameStateManager.save();
+		gameStateManager = GameStateManagerFactory.createGameStateManager(directory);
 		
-		gsSara = gsm.getGameState(2);
-		assertEquals("Sara", gsSara.getOpponentName());
-		assertEquals(1, gsSara.getOpponentID());
-		assertEquals(2, gsSara.getID());
+		gameStateSara = gameStateManager.getGameState(2);
+		assertEquals(GameType.ROCK_PAPER_SCISSORS, gameStateSara.getGameType());
+		assertEquals("Sara", gameStateSara.getOpponentName());
+		assertEquals(1, gameStateSara.getOpponentID());
+		assertEquals(2, gameStateSara.getID());
 		
-		gsPeter = gsm.getGameState(4);
-		assertEquals("Peter", gsPeter.getOpponentName());
-		assertEquals(3, gsPeter.getOpponentID());
-		assertEquals(4, gsPeter.getID());
+		gameStatePeter = gameStateManager.getGameState(4);
+		assertEquals(GameType.TIC_TAC_TOE, gameStatePeter.getGameType());
+		assertEquals("Peter", gameStatePeter.getOpponentName());
+		assertEquals(3, gameStatePeter.getOpponentID());
+		assertEquals(4, gameStatePeter.getID());
 		
-		GameState gsClara = gsm.getGameState(6);
-		assertEquals("Clara", gsClara.getOpponentName());
-		assertEquals(5, gsClara.getOpponentID());
-		assertEquals(6, gsClara.getID());
+		GameState gameStateClara = gameStateManager.getGameState(6);
+		assertEquals(GameType.ROCK_PAPER_SCISSORS, gameStateClara.getGameType());
+		assertEquals("Clara", gameStateClara.getOpponentName());
+		assertEquals(5, gameStateClara.getOpponentID());
+		assertEquals(6, gameStateClara.getID());
 		
 	}
 	
@@ -114,15 +121,15 @@ public class GameStateManagerTest {
 	void updateListenerCalled() {
 		
 		MockUpdateListener listener = new MockUpdateListener();
-		gsm.setUpdateListener(listener);
+		gameStateManager.setUpdateListener(listener);
 		
 		listener.assertNotUpdated();
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Alice", 1, 10, true);
+		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Alice", 1, 10, true);
 		
 		listener.assertUpdated();
 		
-		gsm.createGameState(GameType.TIC_TAC_TOE, "Bernd", 2, 200, false);
+		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Bernd", 2, 200, false);
 		
 		listener.assertUpdated();
 		
