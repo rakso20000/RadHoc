@@ -53,4 +53,5 @@ public interface Communication extends SharkComponent {
 	 * @param listener
 	 */
 	void setInviteListener(InviteListener listener);
+	
 }

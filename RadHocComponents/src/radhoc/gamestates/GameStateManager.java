@@ -3,6 +3,7 @@ package radhoc.gamestates;
 import java.util.List;
 
 public interface GameStateManager {
+	
 	/**
 	 * Returns GameStates for active games
 	 * @return List<GameState>
@@ -38,4 +39,5 @@ public interface GameStateManager {
 	 * Persistently saves all current GameStates
 	 */
 	void save();
+	
 }

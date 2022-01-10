@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InvitationManagerTest {
 	
+	private File invitationsFile;
 	private GameStateManager gameStateManager;
 	private MockCommunication mockCommunication;
 	private InvitationManager invitationManager;
@@ -25,10 +26,11 @@ class InvitationManagerTest {
 	void setUp() throws IOException {
 		
 		File directory = Files.createTempDirectory("radhoctests").toFile();
+		invitationsFile = new File(directory, "invitations");
 		
 		gameStateManager = GameStateManagerFactory.createGameStateManager(directory);
 		mockCommunication = new MockCommunication();
-		invitationManager = InvitationManagerFactory.createInvitationManager(gameStateManager, mockCommunication);
+		invitationManager = InvitationManagerFactory.createInvitationManager(gameStateManager, mockCommunication, invitationsFile);
 		
 	}
 	
@@ -181,7 +183,7 @@ class InvitationManagerTest {
 			
 			mockCommunication.mockReceiveInvite(String.format("Person %d", i), i, GameType.TIC_TAC_TOE);
 			
-			Invitation invitation = invitationManager.getInvitations().get(i);
+			Invitation invitation = invitationManager.getInvitations().get(0);
 			invitation.accept();
 			
 			mockCommunication.assertAccepted(i, GameType.TIC_TAC_TOE);
@@ -200,6 +202,56 @@ class InvitationManagerTest {
 				break;
 			
 		}
+		
+	}
+	
+	@Test
+	void saveInvitations() {
+		
+		mockCommunication.mockReceiveInvite("Alice", 1, GameType.TIC_TAC_TOE);
+		mockCommunication.mockReceiveInvite("Bernd", 2, GameType.TIC_TAC_TOE);
+		mockCommunication.mockReceiveInvite("Clara", 3, GameType.TIC_TAC_TOE);
+		
+		invitationManager.save();
+		invitationManager = InvitationManagerFactory.createInvitationManager(gameStateManager, mockCommunication, invitationsFile);
+		
+		List<Invitation> invitations = invitationManager.getInvitations();
+		assertEquals(3, invitations.size());
+		
+		Invitation invitationA = invitations.get(0);
+		assertEquals("Alice", invitationA.getOpponentName());
+		assertEquals(1, invitationA.getOpponentID());
+		assertEquals(GameType.TIC_TAC_TOE, invitationA.getGameType());
+		
+		Invitation invitationB = invitations.get(1);
+		assertEquals("Bernd", invitationB.getOpponentName());
+		assertEquals(2, invitationB.getOpponentID());
+		assertEquals(GameType.TIC_TAC_TOE, invitationB.getGameType());
+		
+		Invitation invitationC = invitations.get(2);
+		assertEquals("Clara", invitationC.getOpponentName());
+		assertEquals(3, invitationC.getOpponentID());
+		assertEquals(GameType.TIC_TAC_TOE, invitationC.getGameType());
+		
+		invitationA.accept();
+		mockCommunication.mockReceiveInvite("Dieter", 4, GameType.TIC_TAC_TOE);
+		invitationC.decline();
+		
+		invitationManager.save();
+		invitationManager = InvitationManagerFactory.createInvitationManager(gameStateManager, mockCommunication, invitationsFile);
+		
+		invitations = invitationManager.getInvitations();
+		assertEquals(2, invitations.size());
+		
+		invitationB = invitations.get(0);
+		assertEquals("Bernd", invitationB.getOpponentName());
+		assertEquals(2, invitationB.getOpponentID());
+		assertEquals(GameType.TIC_TAC_TOE, invitationB.getGameType());
+		
+		Invitation invitationD = invitations.get(1);
+		assertEquals("Dieter", invitationD.getOpponentName());
+		assertEquals(4, invitationD.getOpponentID());
+		assertEquals(GameType.TIC_TAC_TOE, invitationD.getGameType());
 		
 	}
 	

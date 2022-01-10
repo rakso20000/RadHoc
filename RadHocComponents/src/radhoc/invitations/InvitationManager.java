@@ -4,6 +4,7 @@ import java.util.List;
 import radhoc.gamestates.GameType;
 
 public interface InvitationManager {
+	
 	/**
 	 * Returns all current Invitations
 	 * @return List<Invitation>
@@ -22,4 +23,10 @@ public interface InvitationManager {
 	 * @param gameType
 	 */
 	void sendInvite(String name, GameType gameType);
+	
+	/**
+	 * Persistently saves all current Invitations
+	 */
+	void save();
+	
 }
