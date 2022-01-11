@@ -26,35 +26,43 @@ public class GameLogicTicTacToeImpl extends GameLogicImpl implements GameLogicTi
 	@Override
 	public boolean playShapeAt(int x, int y) throws IllegalArgumentException {
 		
-		if (!state.isPlayable())
-			return false;
-		
-		if (state.getShapeAt(x, y) != Shape.NONE) //Pass IllegalArgumentException for out of bounds coordinates
-			return false;
-		
-		state.setShapeAt(x, y, ownShape);
-		state.playerTurnDone();
-		
-		if (checkVictory(x, y, ownShape))
-			state.win();
-		else if (checkAllFilled())
-			state.draw();
-		
-		communication.sendMove(state.getOpponentID(), state.getID(), new byte[] {(byte) (x*3 + y)});
-		
-		return true;
+		synchronized (this) {
+			
+			if (!state.isPlayable())
+				return false;
+			
+			if (state.getShapeAt(x, y) != Shape.NONE) //Pass IllegalArgumentException for out of bounds coordinates
+				return false;
+			
+			state.setShapeAt(x, y, ownShape);
+			state.playerTurnDone();
+			
+			if (checkVictory(x, y, ownShape))
+				state.win();
+			else if (checkAllFilled())
+				state.draw();
+			
+			communication.sendMove(state.getOpponentID(), state.getID(), new byte[]{(byte) (x * 3 + y)});
+			
+			return true;
+			
+		}
 		
 	}
 	
 	private void opponentPlayedShapeAt(int x, int y) {
 		
-		state.setShapeAt(x, y, opponentShape);
-		state.opponentTurnDone();
-		
-		if (checkVictory(x, y, opponentShape))
-			state.lose();
-		else if (checkAllFilled())
-			state.draw();
+		synchronized (this) {
+			
+			state.setShapeAt(x, y, opponentShape);
+			state.opponentTurnDone();
+			
+			if (checkVictory(x, y, opponentShape))
+				state.lose();
+			else if (checkAllFilled())
+				state.draw();
+			
+		}
 		
 	}
 	

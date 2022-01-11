@@ -47,26 +47,34 @@ public class GameLogicRockPaperScissorsImpl extends GameLogicImpl implements Gam
 	@Override
 	public boolean playShape(Shape shape) {
 		
-		if (!state.isPlayable())
-			return false;
-		
-		state.addPlayerShape(shape);
-		
-		communication.sendMove(state.getOpponentID(), state.getID(), new byte[] {shapeToByte(shape)});
-		
-		checkPlayable();
-		checkScore();
-		
-		return true;
+		synchronized (this) {
+			
+			if (!state.isPlayable())
+				return false;
+			
+			state.addPlayerShape(shape);
+			
+			communication.sendMove(state.getOpponentID(), state.getID(), new byte[]{shapeToByte(shape)});
+			
+			checkPlayable();
+			checkScore();
+			
+			return true;
+			
+		}
 		
 	}
 	
 	private void opponentPlayedShape(Shape shape) {
 		
-		state.addOpponentShape(shape);
-		
-		checkPlayable();
-		checkScore();
+		synchronized (this) {
+			
+			state.addOpponentShape(shape);
+			
+			checkPlayable();
+			checkScore();
+			
+		}
 		
 	}
 	
