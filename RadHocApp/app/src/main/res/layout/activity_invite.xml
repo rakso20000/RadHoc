@@ -46,6 +46,33 @@
 			android:hint="Inviting everyone"
 			android:minHeight="48dp" />
 		
+		<TextView
+			android:text="What would you like to play?"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/textView3"
+			android:textSize="16sp"
+			android:textColor="@color/black" />
+		
+		<RadioGroup
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/game_type_radio">
+			
+			<RadioButton
+				android:text="TicTacToe"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/tic_tac_toe_radio"
+				android:checked="true" />
+			
+			<RadioButton
+				android:text="RockPaperScissors"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/rock_paper_scissors_radio" />
+		</RadioGroup>
+		
 		<Button
 			android:text="Send Invitation"
 			android:layout_width="wrap_content"

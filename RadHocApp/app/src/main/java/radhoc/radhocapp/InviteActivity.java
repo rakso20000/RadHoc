@@ -48,12 +48,23 @@ public class InviteActivity extends ASAPActivity {
 	
 	public void onSendInvitation(View view) {
 		
+		int checkedRadio = binding.gameTypeRadio.getCheckedRadioButtonId();
+		
+		GameType gameType;
+		
+		if (checkedRadio == R.id.tic_tac_toe_radio)
+			gameType = GameType.TIC_TAC_TOE;
+		else if (checkedRadio == R.id.rock_paper_scissors_radio)
+			gameType = GameType.ROCK_PAPER_SCISSORS;
+		else
+			return;
+		
 		String opponentName = binding.inviteOpponentNameText.getText().toString();
 		
 		if (opponentName.length() == 0)
-			invitationManager.sendInvite(GameType.TIC_TAC_TOE);
+			invitationManager.sendInvite(gameType);
 		else
-			invitationManager.sendInvite(opponentName, GameType.TIC_TAC_TOE);
+			invitationManager.sendInvite(opponentName, gameType);
 		
 		finish();
 		
