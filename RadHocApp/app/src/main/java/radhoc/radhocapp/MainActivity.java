@@ -25,6 +25,8 @@ public class MainActivity extends RadHocActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		startBluetooth();
+		
 		gameStateManager = app.getGameStateManager();
 		gameLogicManager = app.getGameLogicManager();
 		
