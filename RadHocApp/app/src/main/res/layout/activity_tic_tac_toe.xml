@@ -15,6 +15,48 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		android:id="@+id/title_bar" />
 	
+	<TextView
+		android:text="Victory"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/victory_text"
+		android:textStyle="bold"
+		app:layout_constraintTop_toBottomOf="@+id/title_bar"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		android:textSize="40sp"
+		android:layout_marginTop="80dp"
+		android:textColor="@color/win_color"
+		android:visibility="invisible" />
+	
+	<TextView
+		android:text="Defeat"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/defeat_text"
+		android:textStyle="bold"
+		app:layout_constraintTop_toBottomOf="@+id/title_bar"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		android:textSize="40sp"
+		android:layout_marginTop="80dp"
+		android:textColor="@color/lose_color"
+		android:visibility="invisible" />
+	
+	<TextView
+		android:text="Draw"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/draw_text"
+		android:textStyle="bold"
+		app:layout_constraintTop_toBottomOf="@+id/title_bar"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		android:textSize="40sp"
+		android:layout_marginTop="80dp"
+		android:textColor="@color/draw_color"
+		android:visibility="invisible" />
+	
 	<TableLayout
 		android:layout_width="0dp"
 		android:layout_height="0dp"

@@ -85,6 +85,18 @@ public class TicTacToeActivity extends ASAPActivity implements UpdateListener {
 		binding.field21.setText(textForShape(gameState.getShapeAt(2, 1)));
 		binding.field22.setText(textForShape(gameState.getShapeAt(2, 2)));
 		
+		switch (gameState.getResult()) {
+		case VICTORY:
+			binding.victoryText.setVisibility(View.VISIBLE);
+			break;
+		case DEFEAT:
+			binding.defeatText.setVisibility(View.VISIBLE);
+			break;
+		case DRAW:
+			binding.drawText.setVisibility(View.VISIBLE);
+			break;
+		}
+		
 	}
 	
 	private CharSequence textForShape(GameStateTicTacToe.Shape shape) {

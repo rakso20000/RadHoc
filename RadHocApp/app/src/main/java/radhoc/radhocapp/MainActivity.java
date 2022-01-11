@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamestates.GameStateManager;
+import radhoc.gamestates.GameStateRockPaperScissors;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameType;
 import radhoc.radhocapp.databinding.ActivityMainBinding;
@@ -58,6 +59,10 @@ public class MainActivity extends ASAPActivity {
 		((GameStateTicTacToe) gameStateManager.getGameState(12)).win();
 		((GameStateTicTacToe) gameStateManager.getGameState(13)).lose();
 		((GameStateTicTacToe) gameStateManager.getGameState(14)).draw();
+		
+		((GameStateRockPaperScissors) gameStateManager.getGameState(16)).addOpponentShape(GameStateRockPaperScissors.Shape.ROCK);
+		((GameStateRockPaperScissors) gameStateManager.getGameState(17)).win();
+		((GameStateRockPaperScissors) gameStateManager.getGameState(18)).lose();
 		
 		RecyclerView recyclerView = findViewById(R.id.gamestate_recycler);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

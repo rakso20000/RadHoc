@@ -117,6 +117,18 @@ public class RockPaperScissorsActivity extends ASAPActivity implements UpdateLis
 		if (opponentTurns >= 3)
 			binding.opponentShape3.setText(opponentShapes.get(2).toString());
 		
+		switch (gameState.getResult()) {
+		case VICTORY:
+			binding.victoryText.setVisibility(View.VISIBLE);
+			break;
+		case DEFEAT:
+			binding.defeatText.setVisibility(View.VISIBLE);
+			break;
+		case DRAW:
+			binding.drawText.setVisibility(View.VISIBLE);
+			break;
+		}
+		
 	}
 	
 	@Override
