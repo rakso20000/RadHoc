@@ -21,7 +21,12 @@ public class GameStateClickListener implements View.OnClickListener {
 	@Override
 	public void onClick(View v) {
 		
-		Intent intent = new Intent(activity, TicTacToeActivity.class);
+		Class<?> destination = switch (gameState.getGameType()) {
+			case TIC_TAC_TOE -> TicTacToeActivity.class;
+			case ROCK_PAPER_SCISSORS -> RockPaperScissorsActivity.class;
+		};
+		
+		Intent intent = new Intent(activity, destination);
 		intent.putExtra("gameID", gameState.getID());
 		activity.startActivity(intent);
 		

@@ -64,8 +64,8 @@ public class GameStateRecyclerAdapter extends RecyclerView.Adapter<GameStateRecy
 		String statusText = gameState.isPlayable() ? "Your Turn" : switch (gameState.getResult()) {
 			case STILL_PLAYING -> "Enemy Turn";
 			case VICTORY -> "Victory";
-			case DEFEAT -> "DEFEAT";
-			case DRAW -> "DRAW";
+			case DEFEAT -> "Defeat";
+			case DRAW -> "Draw";
 		};
 		
 		holder.playButton.setOnClickListener(new GameStateClickListener(activity, gameState));

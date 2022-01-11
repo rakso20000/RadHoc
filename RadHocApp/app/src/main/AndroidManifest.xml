@@ -26,6 +26,9 @@
 		android:theme="@style/Theme.RadHocApp"
 		tools:replace="android:theme">
 		<activity
+			android:name=".RockPaperScissorsActivity"
+			android:exported="false" />
+		<activity
 			android:name=".TicTacToeActivity"
 			android:exported="false" />
 		<activity
