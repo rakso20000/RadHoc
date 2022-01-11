@@ -2,18 +2,10 @@ package radhoc.radhocapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.View;
 
-import net.sharksystem.asap.android.apps.ASAPActivity;
-
-import java.util.Objects;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamestates.GameStateManager;
@@ -22,7 +14,7 @@ import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameType;
 import radhoc.radhocapp.databinding.ActivityMainBinding;
 
-public class MainActivity extends ASAPActivity {
+public class MainActivity extends RadHocActivity {
 	
 	private GameStateManager gameStateManager;
 	private GameLogicManager gameLogicManager;
@@ -33,9 +25,8 @@ public class MainActivity extends ASAPActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		RadHocApp app = (RadHocApp) getApplication();
-		gameStateManager = Objects.requireNonNull(app.getGameStateManager());
-		gameLogicManager = Objects.requireNonNull(app.getGameLogicManager());
+		gameStateManager = app.getGameStateManager();
+		gameLogicManager = app.getGameLogicManager();
 		
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());

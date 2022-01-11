@@ -1,25 +1,19 @@
 package radhoc.radhocapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
-
-import net.sharksystem.asap.android.apps.ASAPActivity;
 
 import java.util.List;
 
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamelogic.GameLogicRockPaperScissors;
-import radhoc.gamelogic.GameLogicTicTacToe;
 import radhoc.gamestates.GameStateManager;
 import radhoc.gamestates.GameStateRockPaperScissors;
 import radhoc.gamestates.GameStateRockPaperScissors.Shape;
-import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.UpdateListener;
 import radhoc.radhocapp.databinding.ActivityRockPaperScissorsBinding;
 
-public class RockPaperScissorsActivity extends ASAPActivity implements UpdateListener {
+public class RockPaperScissorsActivity extends RadHocActivity implements UpdateListener {
 	
 	private ActivityRockPaperScissorsBinding binding;
 	
@@ -30,7 +24,6 @@ public class RockPaperScissorsActivity extends ASAPActivity implements UpdateLis
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		RadHocApp app = (RadHocApp) getApplication();
 		GameStateManager gameStateManager = app.getGameStateManager();
 		GameLogicManager gameLogicManager = app.getGameLogicManager();
 		

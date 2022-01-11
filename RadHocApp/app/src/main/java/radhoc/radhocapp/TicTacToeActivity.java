@@ -1,23 +1,16 @@
 package radhoc.radhocapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Bundle;
 import android.view.View;
 
-import net.sharksystem.asap.android.apps.ASAPActivity;
-
-import radhoc.gamelogic.GameLogic;
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamelogic.GameLogicTicTacToe;
-import radhoc.gamestates.GameState;
 import radhoc.gamestates.GameStateManager;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.UpdateListener;
 import radhoc.radhocapp.databinding.ActivityTicTacToeBinding;
 
-public class TicTacToeActivity extends ASAPActivity implements UpdateListener {
+public class TicTacToeActivity extends RadHocActivity implements UpdateListener {
 	
 	private ActivityTicTacToeBinding binding;
 	
@@ -28,7 +21,6 @@ public class TicTacToeActivity extends ASAPActivity implements UpdateListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		RadHocApp app = (RadHocApp) getApplication();
 		GameStateManager gameStateManager = app.getGameStateManager();
 		GameLogicManager gameLogicManager = app.getGameLogicManager();
 		
