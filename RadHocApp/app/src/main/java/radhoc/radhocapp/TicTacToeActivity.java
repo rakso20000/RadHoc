@@ -61,8 +61,6 @@ public class TicTacToeActivity extends RadHocActivity implements UpdateListener 
 		
 		boolean couldPlay = gameLogic.playShapeAt(x, y);
 		
-		System.out.printf("X: %d, Y: %d%n", x, y);
-		
 	}
 	
 	private void updateFields() {
