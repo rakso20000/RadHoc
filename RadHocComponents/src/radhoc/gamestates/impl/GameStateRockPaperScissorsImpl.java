@@ -37,6 +37,7 @@ public class GameStateRockPaperScissorsImpl extends GameStateImpl implements Gam
 		};
 		
 	}
+	
 	public GameStateRockPaperScissorsImpl(String opponentName, long opponentID, long gameID) {
 		super(GameType.ROCK_PAPER_SCISSORS, opponentName, opponentID, gameID);
 		
