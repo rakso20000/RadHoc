@@ -12,14 +12,15 @@ import radhoc.gamestates.GameStateManager;
 import radhoc.gamestates.GameStateRockPaperScissors;
 import radhoc.gamestates.GameStateTicTacToe;
 import radhoc.gamestates.GameType;
+import radhoc.gamestates.UpdateListener;
 import radhoc.radhocapp.databinding.ActivityMainBinding;
 
-public class MainActivity extends RadHocActivity {
+public class MainActivity extends RadHocActivity implements UpdateListener {
 	
 	private GameStateManager gameStateManager;
-	private GameLogicManager gameLogicManager;
 	
 	private ActivityMainBinding binding;
+	private GameStateRecyclerAdapter adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,6 @@ public class MainActivity extends RadHocActivity {
 		startBluetooth();
 		
 		gameStateManager = app.getGameStateManager();
-		gameLogicManager = app.getGameLogicManager();
 		
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
@@ -57,9 +57,11 @@ public class MainActivity extends RadHocActivity {
 		((GameStateRockPaperScissors) gameStateManager.getGameState(17)).win();
 		((GameStateRockPaperScissors) gameStateManager.getGameState(18)).lose();
 		
-		RecyclerView recyclerView = findViewById(R.id.gamestate_recycler);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-		recyclerView.setAdapter(new GameStateRecyclerAdapter(this, gameStateManager.getAllGameStates()));
+		gameStateManager.setUpdateListener(this);
+		
+		adapter = new GameStateRecyclerAdapter(this, gameStateManager.getAllGameStates());
+		binding.gamestateRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+		binding.gamestateRecycler.setAdapter(adapter);
 		
 	}
 	
@@ -67,6 +69,13 @@ public class MainActivity extends RadHocActivity {
 		
 		Intent intent = new Intent(this, InvitationsActivity.class);
 		startActivity(intent);
+		
+	}
+	
+	@Override
+	public void onUpdate() {
+		
+		adapter.updateGameStates(gameStateManager.getAllGameStates());
 		
 	}
 	

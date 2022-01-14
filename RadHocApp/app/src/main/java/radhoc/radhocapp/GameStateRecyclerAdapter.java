@@ -18,12 +18,19 @@ public class GameStateRecyclerAdapter extends RecyclerView.Adapter<GameStateRecy
 	
 	private final Activity activity;
 	
-	private final List<GameState> gameStates;
+	private List<GameState> gameStates;
 	
 	public GameStateRecyclerAdapter(Activity activity, List<GameState> gameStates) {
 		
 		this.activity = activity;
 		this.gameStates = gameStates;
+		
+	}
+	
+	public void updateGameStates(List<GameState> gameStates) {
+		
+		this.gameStates = gameStates;
+		notifyDataSetChanged();
 		
 	}
 	
