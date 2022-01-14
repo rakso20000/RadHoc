@@ -7,7 +7,11 @@ import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Map;
+
+import radhoc.communication.MockCommunication;
 import radhoc.gamelogic.GameLogicManager;
+import radhoc.gamestates.GameState;
 import radhoc.gamestates.GameStateManager;
 import radhoc.gamestates.GameStateRockPaperScissors;
 import radhoc.gamestates.GameStateTicTacToe;
@@ -38,24 +42,16 @@ public class MainActivity extends RadHocActivity implements UpdateListener {
 		binding.titleBar.nextButton.setText("Invitations");
 		
 		//TODO remove sample data
-		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Clara", 5, 10, true);
-		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Lara", 6, 11, true);
-		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Sara", 7, 12, true);
-		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Hans", 8, 13, true);
-		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Peter", 9, 14, true);
-		gameStateManager.createGameState(GameType.TIC_TAC_TOE, "Dieter", 10, 15, true);
-		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Georg", 11, 16, true);
-		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Franz", 12, 17, true);
-		gameStateManager.createGameState(GameType.ROCK_PAPER_SCISSORS, "Marie", 13, 18, true);
+		MockCommunication comm = app.getCommunication();
 		
-		((GameStateTicTacToe) gameStateManager.getGameState(11)).playerTurnDone();
-		((GameStateTicTacToe) gameStateManager.getGameState(12)).win();
-		((GameStateTicTacToe) gameStateManager.getGameState(13)).lose();
-		((GameStateTicTacToe) gameStateManager.getGameState(14)).draw();
-		
-		((GameStateRockPaperScissors) gameStateManager.getGameState(16)).addOpponentShape(GameStateRockPaperScissors.Shape.ROCK);
-		((GameStateRockPaperScissors) gameStateManager.getGameState(17)).win();
-		((GameStateRockPaperScissors) gameStateManager.getGameState(18)).lose();
+		comm.mockInviteAccepted("Harald", 420, 4, GameType.ROCK_PAPER_SCISSORS, true);
+		comm.mockInviteAccepted("Lara", 421, 5, GameType.ROCK_PAPER_SCISSORS, true);
+		comm.mockInviteAccepted("Alice", 422, 6, GameType.ROCK_PAPER_SCISSORS, true);
+		comm.mockInviteAccepted("Harald", 420, 7, GameType.TIC_TAC_TOE, true);
+		comm.mockInviteAccepted("Lara", 421, 8, GameType.TIC_TAC_TOE, true);
+		comm.mockInviteAccepted("Alice", 422, 9, GameType.TIC_TAC_TOE, false);
+		comm.mockMove(4, new byte[] {2});
+		comm.mockMove(9, new byte[] {1*3 + 1});
 		
 		gameStateManager.setUpdateListener(this);
 		

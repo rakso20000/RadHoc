@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import java.util.List;
+import java.util.Random;
 
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamelogic.GameLogicRockPaperScissors;
+import radhoc.gamestates.GameResult;
 import radhoc.gamestates.GameStateManager;
 import radhoc.gamestates.GameStateRockPaperScissors;
 import radhoc.gamestates.GameStateRockPaperScissors.Shape;
@@ -19,6 +21,8 @@ public class RockPaperScissorsActivity extends RadHocActivity implements UpdateL
 	
 	private GameStateRockPaperScissors gameState;
 	private GameLogicRockPaperScissors gameLogic;
+	
+	private final Random random = new Random();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,18 +57,37 @@ public class RockPaperScissorsActivity extends RadHocActivity implements UpdateL
 	public void rockClicked(View view) {
 		
 		gameLogic.playShape(Shape.ROCK);
+		mockOpponentMove();
 		
 	}
 	
 	public void paperClicked(View view) {
 		
 		gameLogic.playShape(Shape.PAPER);
+		mockOpponentMove();
 		
 	}
 	
 	public void scissorsClicked(View view) {
 		
 		gameLogic.playShape(Shape.SCISSORS);
+		mockOpponentMove();
+		
+	}
+	
+	private void mockOpponentMove() {
+		
+		if (gameState.getResult() != GameResult.STILL_PLAYING)
+			return;
+		
+		if (gameState.getPlayerShapes().size() > gameState.getOpponentShapes().size())
+			app.getCommunication().mockMove(gameState.getID(), new byte[] {(byte) random.nextInt(3)});
+		
+		if (gameState.getResult() != GameResult.STILL_PLAYING)
+			return;
+		
+		if (gameState.getPlayerShapes().size() == gameState.getOpponentShapes().size() && random.nextBoolean())
+			app.getCommunication().mockMove(gameState.getID(), new byte[] {(byte) random.nextInt(3)});
 		
 	}
 	

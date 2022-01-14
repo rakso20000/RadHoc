@@ -20,30 +20,6 @@ public class GameStateManagerImpl implements GameStateManager {
 		
 		this.directory = directory;
 		
-		for (File file : Objects.requireNonNull(directory.listFiles())) {
-			
-			try {
-				
-				try (FileInputStream fis = new FileInputStream(file)) {
-					
-					GameState gameState = GameStateImpl.fromStream(this, fis);
-					
-					gameStates.put(gameState.getID(), gameState);
-					
-				}
-				
-			} catch (IOException ex) {
-				
-				System.err.println("Failed to load GameState from file " + file.getName());
-				ex.printStackTrace();
-				
-				//noinspection ResultOfMethodCallIgnored
-				file.delete();
-				
-			}
-			
-		}
-		
 	}
 	
 	@Override

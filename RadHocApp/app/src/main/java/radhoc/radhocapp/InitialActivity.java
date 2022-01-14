@@ -30,6 +30,7 @@ import java.util.concurrent.Future;
 
 import radhoc.communication.Communication;
 import radhoc.communication.CommunicationFactory;
+import radhoc.communication.MockCommunication;
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamelogic.GameLogicManagerFactory;
 import radhoc.gamestates.GameStateManager;
@@ -224,6 +225,8 @@ public class InitialActivity extends AppCompatActivity {
 	
 	private void createComponents() throws IOException, ExecutionException, InterruptedException {
 		
+		MockCommunication communication = new MockCommunication();
+		
 		File appRootDir = getFilesDir();
 		File gameStatesFolder = new File(appRootDir, "gamestates");
 		File invitationsFile = new File(appRootDir, "invitations");
@@ -236,16 +239,19 @@ public class InitialActivity extends AppCompatActivity {
 		
 		System.out.println("Username: " + username.get());
 		
+		app.setCommunication(
+			communication
+		);
 		app.setGameStateManager(GameStateManagerFactory.createGameStateManager(
 			gameStatesFolder
 		));
 		app.setGameLogicManager(GameLogicManagerFactory.createGameLogicManager(
 			app.getGameStateManager(),
-			communicationFuture.get()
+			communication
 		));
 		app.setInvitationManager(InvitationManagerFactory.createInvitationManager(
 			app.getGameStateManager(),
-			communicationFuture.get(),
+			communication,
 			invitationsFile
 		));
 		

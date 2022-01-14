@@ -3,10 +3,14 @@ package radhoc.radhocapp;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.Random;
+
 import radhoc.gamelogic.GameLogicManager;
 import radhoc.gamelogic.GameLogicTicTacToe;
+import radhoc.gamestates.GameResult;
 import radhoc.gamestates.GameStateManager;
 import radhoc.gamestates.GameStateTicTacToe;
+import radhoc.gamestates.GameStateTicTacToe.Shape;
 import radhoc.gamestates.UpdateListener;
 import radhoc.radhocapp.databinding.ActivityTicTacToeBinding;
 
@@ -16,6 +20,8 @@ public class TicTacToeActivity extends RadHocActivity implements UpdateListener 
 	
 	private GameStateTicTacToe gameState;
 	private GameLogicTicTacToe gameLogic;
+	
+	private final Random random = new Random();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +67,20 @@ public class TicTacToeActivity extends RadHocActivity implements UpdateListener 
 		
 		boolean couldPlay = gameLogic.playShapeAt(x, y);
 		
+		if (gameState.getResult() != GameResult.STILL_PLAYING)
+			return;
+		
+		int ox, oy;
+		
+		do {
+			
+			ox = random.nextInt(3);
+			oy = random.nextInt(3);
+			
+		} while (gameState.getShapeAt(ox, oy) != Shape.NONE);
+		
+		app.getCommunication().mockMove(gameState.getID(), new byte[] {(byte) (ox*3 + oy)});
+		
 	}
 	
 	private void updateFields() {
@@ -89,7 +109,7 @@ public class TicTacToeActivity extends RadHocActivity implements UpdateListener 
 		
 	}
 	
-	private CharSequence textForShape(GameStateTicTacToe.Shape shape) {
+	private CharSequence textForShape(Shape shape) {
 		
 		return switch (shape) {
 			case CROSS -> "X";
