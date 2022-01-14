@@ -103,15 +103,23 @@ public class GameLogicRockPaperScissorsImpl extends GameLogicImpl implements Gam
 		
 		//best of three
 		
-		if (roundsPlayed < 2)
-			return;
-		
-		if (state.getPlayerScore() > 1)
-			state.win();
-		else if (state.getOpponentScore() > 1)
-			state.lose();
-		else if (roundsPlayed > 2)
-			state.draw();
+		if (roundsPlayed == 2) {
+			
+			if (state.getPlayerScore() >= 2)
+				state.win();
+			else if (state.getOpponentScore() >= 2)
+				state.lose();
+			
+		} else if (roundsPlayed == 3) {
+			
+			if (state.getPlayerScore() > state.getOpponentScore())
+				state.win();
+			else if (state.getPlayerScore() < state.getOpponentScore())
+				state.lose();
+			else
+				state.draw();
+			
+		}
 		
 	}
 	
