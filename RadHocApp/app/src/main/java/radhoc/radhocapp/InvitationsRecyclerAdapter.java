@@ -16,11 +16,18 @@ import radhoc.invitations.Invitation;
 
 public class InvitationsRecyclerAdapter extends RecyclerView.Adapter<InvitationsRecyclerAdapter.ViewHolder> {
 	
-	private final List<Invitation> invitations;
+	private List<Invitation> invitations;
 	
 	public InvitationsRecyclerAdapter(List<Invitation> invitations) {
 		
 		this.invitations = invitations;
+		
+	}
+	
+	public void updateInvitations(List<Invitation> invitations) {
+		
+		this.invitations = invitations;
+		notifyDataSetChanged();
 		
 	}
 	

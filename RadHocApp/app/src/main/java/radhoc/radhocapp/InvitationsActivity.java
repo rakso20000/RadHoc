@@ -7,14 +7,16 @@ import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import radhoc.gamestates.UpdateListener;
 import radhoc.invitations.InvitationManager;
 import radhoc.radhocapp.databinding.ActivityInvitationsBinding;
 
-public class InvitationsActivity extends RadHocActivity {
+public class InvitationsActivity extends RadHocActivity implements UpdateListener {
 	
 	private InvitationManager invitationManager;
 	
 	private ActivityInvitationsBinding binding;
+	private InvitationsRecyclerAdapter adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +30,11 @@ public class InvitationsActivity extends RadHocActivity {
 		binding.titleBar.titleText.setText("Invitations");
 		binding.titleBar.nextButton.setText("Send Invite");
 		
-		RecyclerView recyclerView = findViewById(R.id.invitations_recycler);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-		recyclerView.setAdapter(new InvitationsRecyclerAdapter(invitationManager.getInvitations()));
+		invitationManager.setUpdateListener(this);
+		
+		adapter = new InvitationsRecyclerAdapter(invitationManager.getInvitations());
+		binding.invitationsRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+		binding.invitationsRecycler.setAdapter(adapter);
 		
 	}
 	
@@ -44,6 +48,13 @@ public class InvitationsActivity extends RadHocActivity {
 		
 		Intent intent = new Intent(this, InviteActivity.class);
 		startActivity(intent);
+		
+	}
+	
+	@Override
+	public void onUpdate() {
+		
+		adapter.updateInvitations(invitationManager.getInvitations());
 		
 	}
 	
