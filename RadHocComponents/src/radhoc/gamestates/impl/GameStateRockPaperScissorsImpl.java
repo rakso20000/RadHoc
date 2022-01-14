@@ -38,13 +38,13 @@ public class GameStateRockPaperScissorsImpl extends GameStateImpl implements Gam
 		
 	}
 	
-	public GameStateRockPaperScissorsImpl(String opponentName, long opponentID, long gameID) {
-		super(GameType.ROCK_PAPER_SCISSORS, opponentName, opponentID, gameID);
+	public GameStateRockPaperScissorsImpl(GameStateManagerImpl gameStateManager, String opponentName, long opponentID, long gameID) {
+		super(gameStateManager, GameType.ROCK_PAPER_SCISSORS, opponentName, opponentID, gameID);
 		
 	}
 	
-	public GameStateRockPaperScissorsImpl(String opponentName, long opponentID, long gameID, InputStream inputStream) throws IOException {
-		super(GameType.ROCK_PAPER_SCISSORS, opponentName, opponentID, gameID);
+	public GameStateRockPaperScissorsImpl(GameStateManagerImpl gameStateManager, String opponentName, long opponentID, long gameID, InputStream inputStream) throws IOException {
+		super(gameStateManager, GameType.ROCK_PAPER_SCISSORS, opponentName, opponentID, gameID);
 		
 		try (
 			DataInputStream dis = new DataInputStream(inputStream)

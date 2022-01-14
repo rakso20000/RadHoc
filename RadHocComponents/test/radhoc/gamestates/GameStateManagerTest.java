@@ -133,6 +133,14 @@ public class GameStateManagerTest {
 		
 		listener.assertUpdated();
 		
+		GameStateTicTacToe gameState = (GameStateTicTacToe) gameStateManager.getGameState(10);
+		
+		listener.assertNotUpdated();
+		
+		gameState.playerTurnDone();
+		
+		listener.assertUpdated();
+		
 	}
 	
 }

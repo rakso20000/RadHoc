@@ -26,7 +26,7 @@ public class GameStateManagerImpl implements GameStateManager {
 				
 				try (FileInputStream fis = new FileInputStream(file)) {
 					
-					GameState gameState = GameStateImpl.fromStream(fis);
+					GameState gameState = GameStateImpl.fromStream(this, fis);
 					
 					gameStates.put(gameState.getID(), gameState);
 					
@@ -56,7 +56,7 @@ public class GameStateManagerImpl implements GameStateManager {
 	@Override
 	public GameState createGameState(GameType gameType, String opponentName, long opponentID, long gameID, boolean playerStarts) {
 		
-		GameState gameState = GameStateImpl.create(gameType, opponentName, opponentID, gameID, playerStarts);
+		GameState gameState = GameStateImpl.create(this, gameType, opponentName, opponentID, gameID, playerStarts);
 		
 		gameStates.put(gameState.getID(), gameState);
 		
@@ -109,7 +109,7 @@ public class GameStateManagerImpl implements GameStateManager {
 		
 	}
 	
-	private void update() {
+	public void update() {
 		
 		if (updateListener != null)
 			updateListener.onUpdate();

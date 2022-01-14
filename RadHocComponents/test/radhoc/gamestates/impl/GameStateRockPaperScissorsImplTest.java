@@ -1,25 +1,36 @@
 package radhoc.gamestates.impl;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import radhoc.gamestates.GameResult;
-import radhoc.gamestates.GameStateRockPaperScissors;
+import radhoc.gamestates.*;
 import radhoc.gamestates.GameStateRockPaperScissors.Shape;
-import radhoc.gamestates.GameStateTicTacToe;
-import radhoc.gamestates.GameType;
 import radhoc.mock.MockUpdateListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameStateRockPaperScissorsImplTest {
 	
+	private GameStateManagerImpl gameStateManager;
+	
+	@BeforeEach
+	void setUp() throws IOException {
+		
+		File directory = Files.createTempDirectory("radhoctests").toFile();
+		
+		gameStateManager = (GameStateManagerImpl) GameStateManagerFactory.createGameStateManager(directory);
+		
+	}
+	
 	@Test
 	void createGameState() {
 		
-		GameStateRockPaperScissors gameState = new GameStateRockPaperScissorsImpl("Alice", 1, 10);
+		GameStateRockPaperScissors gameState = new GameStateRockPaperScissorsImpl(gameStateManager, "Alice", 1, 10);
 		
 		assertEquals(GameType.ROCK_PAPER_SCISSORS, gameState.getGameType());
 		assertEquals("Alice", gameState.getOpponentName());
@@ -37,9 +48,9 @@ class GameStateRockPaperScissorsImplTest {
 	@Test
 	void setResult() {
 		
-		GameStateRockPaperScissors gameStateA = new GameStateRockPaperScissorsImpl("Alice", 1, 2);
-		GameStateRockPaperScissors gameStateB = new GameStateRockPaperScissorsImpl("Bernd", 2, 3);
-		GameStateRockPaperScissors gameStateC = new GameStateRockPaperScissorsImpl("Clara", 3, 4);
+		GameStateRockPaperScissors gameStateA = new GameStateRockPaperScissorsImpl(gameStateManager, "Alice", 1, 2);
+		GameStateRockPaperScissors gameStateB = new GameStateRockPaperScissorsImpl(gameStateManager, "Bernd", 2, 3);
+		GameStateRockPaperScissors gameStateC = new GameStateRockPaperScissorsImpl(gameStateManager, "Clara", 3, 4);
 		
 		assertEquals(GameResult.STILL_PLAYING, gameStateA.getResult());
 		assertEquals(GameResult.STILL_PLAYING, gameStateB.getResult());
@@ -66,7 +77,7 @@ class GameStateRockPaperScissorsImplTest {
 	@Test
 	void addScore() {
 		
-		GameStateRockPaperScissors gameState = new GameStateRockPaperScissorsImpl("Petra", 75, 570);
+		GameStateRockPaperScissors gameState = new GameStateRockPaperScissorsImpl(gameStateManager, "Petra", 75, 570);
 		
 		assertEquals(0, gameState.getPlayerScore());
 		assertEquals(0, gameState.getOpponentScore());
@@ -92,7 +103,7 @@ class GameStateRockPaperScissorsImplTest {
 	@Test
 	void addShapes() {
 		
-		GameStateRockPaperScissors gameState = new GameStateRockPaperScissorsImpl("Peter", 69, 1239);
+		GameStateRockPaperScissors gameState = new GameStateRockPaperScissorsImpl(gameStateManager, "Peter", 69, 1239);
 		
 		assertTrue(gameState.getPlayerShapes().isEmpty());
 		assertTrue(gameState.getOpponentShapes().isEmpty());
@@ -126,7 +137,7 @@ class GameStateRockPaperScissorsImplTest {
 	@Test
 	void setPlayable() {
 		
-		GameStateRockPaperScissors gameState = new GameStateRockPaperScissorsImpl("Lara", 15, 105);
+		GameStateRockPaperScissors gameState = new GameStateRockPaperScissorsImpl(gameStateManager, "Lara", 15, 105);
 		
 		assertTrue(gameState.isPlayable());
 		
@@ -159,9 +170,9 @@ class GameStateRockPaperScissorsImplTest {
 	@Test
 	void modifyFinishedGame() {
 		
-		GameStateRockPaperScissors gameStateWon = new GameStateRockPaperScissorsImpl("Alice", 1, 10);
-		GameStateRockPaperScissors gameStateLost = new GameStateRockPaperScissorsImpl("Bernd", 2, 20);
-		GameStateRockPaperScissors gameStateDraw = new GameStateRockPaperScissorsImpl("Clara", 3, 30);
+		GameStateRockPaperScissors gameStateWon = new GameStateRockPaperScissorsImpl(gameStateManager, "Alice", 1, 10);
+		GameStateRockPaperScissors gameStateLost = new GameStateRockPaperScissorsImpl(gameStateManager, "Bernd", 2, 20);
+		GameStateRockPaperScissors gameStateDraw = new GameStateRockPaperScissorsImpl(gameStateManager, "Clara", 3, 30);
 		
 		gameStateWon.win();
 		gameStateLost.lose();
@@ -196,7 +207,7 @@ class GameStateRockPaperScissorsImplTest {
 	@Test
 	void readWriteShapes() throws IOException {
 		
-		GameStateRockPaperScissorsImpl gameState = new GameStateRockPaperScissorsImpl("Klaus", 40, 4040);
+		GameStateRockPaperScissorsImpl gameState = new GameStateRockPaperScissorsImpl(gameStateManager, "Klaus", 40, 4040);
 		
 		gameState.addPlayerShape(Shape.ROCK);
 		gameState.addPlayerShape(Shape.SCISSORS);
@@ -215,11 +226,11 @@ class GameStateRockPaperScissorsImplTest {
 	@Test
 	void readWriteData() throws IOException {
 		
-		GameStateRockPaperScissorsImpl gameStateA = new GameStateRockPaperScissorsImpl("Alice", 1, -1);
-		GameStateRockPaperScissorsImpl gameStateB = new GameStateRockPaperScissorsImpl("Bernd", 2, -2);
-		GameStateRockPaperScissorsImpl gameStateC = new GameStateRockPaperScissorsImpl("Clara", 3, -3);
-		GameStateRockPaperScissorsImpl gameStateD = new GameStateRockPaperScissorsImpl("Dieter", 4, -4);
-		GameStateRockPaperScissorsImpl gameStateE = new GameStateRockPaperScissorsImpl("Erik", 5, -5);
+		GameStateRockPaperScissorsImpl gameStateA = new GameStateRockPaperScissorsImpl(gameStateManager, "Alice", 1, -1);
+		GameStateRockPaperScissorsImpl gameStateB = new GameStateRockPaperScissorsImpl(gameStateManager, "Bernd", 2, -2);
+		GameStateRockPaperScissorsImpl gameStateC = new GameStateRockPaperScissorsImpl(gameStateManager, "Clara", 3, -3);
+		GameStateRockPaperScissorsImpl gameStateD = new GameStateRockPaperScissorsImpl(gameStateManager, "Dieter", 4, -4);
+		GameStateRockPaperScissorsImpl gameStateE = new GameStateRockPaperScissorsImpl(gameStateManager, "Erik", 5, -5);
 		
 		gameStateB.playerScored();
 		gameStateB.opponentScored();
@@ -284,7 +295,7 @@ class GameStateRockPaperScissorsImplTest {
 				ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())
 			) {
 				
-				return new GameStateRockPaperScissorsImpl(gameState.getOpponentName(), gameState.getOpponentID(), gameState.getID(), bais);
+				return new GameStateRockPaperScissorsImpl(gameStateManager, gameState.getOpponentName(), gameState.getOpponentID(), gameState.getID(), bais);
 				
 			}
 			
@@ -299,9 +310,9 @@ class GameStateRockPaperScissorsImplTest {
 		MockUpdateListener listenerB = new MockUpdateListener();
 		MockUpdateListener listenerC = new MockUpdateListener();
 		
-		GameStateRockPaperScissors gameStateA = new GameStateRockPaperScissorsImpl("Alice", 1, 100);
-		GameStateRockPaperScissors gameStateB = new GameStateRockPaperScissorsImpl("Bernd", 2, 200);
-		GameStateRockPaperScissors gameStateC = new GameStateRockPaperScissorsImpl("Clara", 3, 300);
+		GameStateRockPaperScissors gameStateA = new GameStateRockPaperScissorsImpl(gameStateManager, "Alice", 1, 100);
+		GameStateRockPaperScissors gameStateB = new GameStateRockPaperScissorsImpl(gameStateManager, "Bernd", 2, 200);
+		GameStateRockPaperScissors gameStateC = new GameStateRockPaperScissorsImpl(gameStateManager, "Clara", 3, 300);
 		
 		gameStateA.setUpdateListener(listenerA);
 		gameStateB.setUpdateListener(listenerB);

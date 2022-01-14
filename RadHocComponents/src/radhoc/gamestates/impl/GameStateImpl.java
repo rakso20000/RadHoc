@@ -8,6 +8,8 @@ import java.io.*;
 
 public abstract class GameStateImpl implements GameState {
 	
+	private final GameStateManagerImpl gameStateManager;
+	
 	private final GameType gameType;
 	private final String opponentName;
 	private final long opponentID;
@@ -15,16 +17,16 @@ public abstract class GameStateImpl implements GameState {
 	
 	private UpdateListener updateListener;
 	
-	public static GameState create(GameType gameType, String opponentName, long opponentID, long gameID, boolean playerStarts) {
+	public static GameState create(GameStateManagerImpl gameStateManager, GameType gameType, String opponentName, long opponentID, long gameID, boolean playerStarts) {
 		
 		return switch (gameType) {
-			case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, playerStarts);
-			case ROCK_PAPER_SCISSORS -> new GameStateRockPaperScissorsImpl(opponentName, opponentID, gameID);
+			case TIC_TAC_TOE -> new GameStateTicTacToeImpl(gameStateManager, opponentName, opponentID, gameID, playerStarts);
+			case ROCK_PAPER_SCISSORS -> new GameStateRockPaperScissorsImpl(gameStateManager, opponentName, opponentID, gameID);
 		};
 		
 	}
 	
-	public static GameState fromStream(InputStream inputStream) throws IOException {
+	public static GameState fromStream(GameStateManagerImpl gameStateManager, InputStream inputStream) throws IOException {
 		
 		try (DataInputStream dis = new DataInputStream(inputStream)) {
 			
@@ -34,16 +36,17 @@ public abstract class GameStateImpl implements GameState {
 			long gameID = dis.readLong();
 			
 			return switch (gameType) {
-				case TIC_TAC_TOE -> new GameStateTicTacToeImpl(opponentName, opponentID, gameID, inputStream);
-				case ROCK_PAPER_SCISSORS -> new GameStateRockPaperScissorsImpl(opponentName, opponentID, gameID, inputStream);
+				case TIC_TAC_TOE -> new GameStateTicTacToeImpl(gameStateManager, opponentName, opponentID, gameID, inputStream);
+				case ROCK_PAPER_SCISSORS -> new GameStateRockPaperScissorsImpl(gameStateManager, opponentName, opponentID, gameID, inputStream);
 			};
 			
 		}
 		
 	}
 	
-	public GameStateImpl(GameType gameType, String opponentName, long opponentID, long gameID) {
+	public GameStateImpl(GameStateManagerImpl gameStateManager, GameType gameType, String opponentName, long opponentID, long gameID) {
 		
+		this.gameStateManager = gameStateManager;
 		this.gameType = gameType;
 		this.opponentName = opponentName;
 		this.opponentID = opponentID;
@@ -90,6 +93,8 @@ public abstract class GameStateImpl implements GameState {
 		
 		if (updateListener != null)
 			updateListener.onUpdate();
+		
+		gameStateManager.update();
 		
 	}
 	

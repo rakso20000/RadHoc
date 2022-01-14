@@ -37,9 +37,9 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		
 	}
 	
-	public GameStateTicTacToeImpl(String opponentName, long opponentID, long gameID, boolean playerStarts) {
+	public GameStateTicTacToeImpl(GameStateManagerImpl gameStateManager, String opponentName, long opponentID, long gameID, boolean playerStarts) {
 		
-		super(GameType.TIC_TAC_TOE, opponentName, opponentID, gameID);
+		super(gameStateManager, GameType.TIC_TAC_TOE, opponentName, opponentID, gameID);
 		
 		playerShape = playerStarts ? Shape.CROSS : Shape.CIRCLE;
 		playerTurn = playerStarts;
@@ -48,9 +48,9 @@ public class GameStateTicTacToeImpl extends GameStateImpl implements GameStateTi
 		
 	}
 	
-	public GameStateTicTacToeImpl(String opponentName, long opponentID, long gameID, InputStream inputStream) throws IOException {
+	public GameStateTicTacToeImpl(GameStateManagerImpl gameStateManager, String opponentName, long opponentID, long gameID, InputStream inputStream) throws IOException {
 		
-		super(GameType.TIC_TAC_TOE, opponentName, opponentID, gameID);
+		super(gameStateManager, GameType.TIC_TAC_TOE, opponentName, opponentID, gameID);
 		
 		try (
 			DataInputStream dis = new DataInputStream(inputStream)
